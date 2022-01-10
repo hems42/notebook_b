@@ -13,6 +13,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class NotebookBApplication {
 
     public static void main(String[] args) {
+
+
         SpringApplication.run(NotebookBApplication.class, args);
     }
     @Bean
