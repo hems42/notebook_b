@@ -33,7 +33,7 @@ public class Address {
     @Column(name = "Street",nullable = false,length = 50)
     private String street;
 
-    @Column(name = "DoorNumberInside",nullable = false,length = 10)
+    @Column(name = "DoorNumberInside",length = 10)
     private String doorNumberInside;
 
     @Column(name = "DoorNumberOutside",nullable = false,length = 10)
