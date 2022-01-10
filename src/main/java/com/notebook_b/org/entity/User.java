@@ -26,8 +26,14 @@ public abstract class User {
     @Column(name = "Email", nullable = false, length = 50)
     private String email;
 
-    @Column(name = "Password", nullable = false, length = 250)
+    @Column(name = "Password", nullable = false, length = 200)
     private String password;
+
+    @Column(name = "IsActive", nullable = false)
+    private Boolean isActive;
+
+    @Column(name = "IsRegistered", nullable = false)
+    private Boolean isRegistered;
 
     @Column(name = "CreatedDate", updatable = false)
     private LocalDateTime createdDate;
