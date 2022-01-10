@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -22,4 +23,10 @@ public class City {
 
     @Column(name = "PlateCode",nullable = false,length = 10)
     private String plateCode;
+
+    @Column(name = "CreatedDate", updatable = false)
+    private LocalDateTime createdDate;
+
+    @Column(name = "UpdatedDate", insertable = false)
+    private LocalDateTime updatedDate;
 }

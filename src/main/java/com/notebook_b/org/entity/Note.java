@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -17,4 +18,9 @@ public class Note {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "CreatedDate", updatable = false)
+    private LocalDateTime createdDate;
+
+    @Column(name = "UpdatedDate", insertable = false)
+    private LocalDateTime updatedDate;
 }
