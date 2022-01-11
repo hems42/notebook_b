@@ -1,7 +1,8 @@
 package com.notebook_b.org.entity.enums;
 
-public enum EnumLogin {
+public enum EnumUser {
     LOGIN,
     LOGOUT,
-    SIGN_IN
+    SIGN_IN,
+    UPDATED
 }

@@ -18,6 +18,18 @@ public class Note {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Lob
+    @Column(name = "Note",nullable = false)
+    private String note;
+
+    @Lob
+    @Column(name = "Data", columnDefinition="BLOB")
+    private Byte[] data;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "UserId")
+    private User userId;
+
     @Column(name = "CreatedDate", updatable = false)
     private LocalDateTime createdDate;
 

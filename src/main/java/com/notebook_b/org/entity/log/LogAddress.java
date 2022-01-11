@@ -1,5 +1,6 @@
 package com.notebook_b.org.entity.log;
 
+import com.notebook_b.org.entity.Address;
 import com.notebook_b.org.entity.User;
 import com.notebook_b.org.entity.enums.EnumCrud;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,10 @@ public class LogAddress {
 
     @Enumerated(EnumType.STRING)
     private EnumCrud crud;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "AddressId",nullable = false)
+    private Address address;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "UserId", nullable = false)
