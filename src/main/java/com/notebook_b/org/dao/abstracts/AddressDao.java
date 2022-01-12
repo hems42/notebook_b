@@ -1,4 +1,4 @@
-package com.notebook_b.org.dataAcces.abstracts;
+package com.notebook_b.org.dao.abstracts;
 
 
 import com.notebook_b.org.entity.Address;

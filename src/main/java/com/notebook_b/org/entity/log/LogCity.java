@@ -4,10 +4,18 @@ package com.notebook_b.org.entity.log;
 import com.notebook_b.org.entity.User;
 import com.notebook_b.org.entity.enums.EnumCrud;
 import com.notebook_b.org.entity.util.City;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "LogCities")
 public class LogCity {
 
     @Id
