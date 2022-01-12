@@ -1,4 +1,4 @@
-package com.notebook_b.org.dao.abstracts;
+package com.notebook_b.org.dao;
 
 
 import com.notebook_b.org.entity.Address;

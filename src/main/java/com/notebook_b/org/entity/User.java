@@ -21,10 +21,10 @@ public class User implements Serializable {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
 
-    @Column(name = "NickName", nullable = false, length = 50)
+    @Column(name = "NickName", nullable = false, length = 50, unique = true)
     private String nickName;
 
-    @Column(name = "Email", nullable = false, length = 50)
+    @Column(name = "Email", nullable = false, length = 50, unique = true)
     private String email;
 
     @Column(name = "Password", nullable = false, length = 200)
