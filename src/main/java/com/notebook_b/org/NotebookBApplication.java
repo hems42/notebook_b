@@ -1,6 +1,6 @@
 package com.notebook_b.org;
 
-import com.notebook_b.org.business.concrete.UserService;
+import com.notebook_b.org.service.concrete.UserService;
 import com.notebook_b.org.dto.entity.UserDto;
 import com.notebook_b.org.dto.request.createRequest.UserRequestCreate;
 import org.springframework.beans.factory.annotation.Autowired;
