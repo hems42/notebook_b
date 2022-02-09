@@ -1,4 +1,4 @@
-package com.notebook_b.org.dao;
+package com.notebook_b.org.repository;
 
 import com.notebook_b.org.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
