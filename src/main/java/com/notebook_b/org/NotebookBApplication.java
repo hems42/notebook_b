@@ -28,16 +28,16 @@ public class NotebookBApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        UserRequestCreate requestCreate= new UserRequestCreate(
+      /*  UserRequestCreate requestCreate= new UserRequestCreate(
                 "caglar",
                 "eflatun126@gmail.com",
                 "1122334455"
         );
 
-       UserDto userDto = userService.createUser(requestCreate).getData();
+       UserDto userDto = userService.addUser(requestCreate).getData();
 
         System.out.println("kayıt başarılı");
-        System.out.println(userDto.toString());
+        System.out.println(userDto.toString());*/
 
     }
 
