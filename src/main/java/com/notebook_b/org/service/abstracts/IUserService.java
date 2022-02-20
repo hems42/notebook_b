@@ -5,6 +5,7 @@ import com.notebook_b.org.dto.entity.AddressDto;
 import com.notebook_b.org.dto.entity.NoteDto;
 import com.notebook_b.org.dto.entity.UserDto;
 import com.notebook_b.org.dto.request.createRequest.AddressRequestCreate;
+import com.notebook_b.org.dto.request.createRequest.LogUserRequestCreate;
 import com.notebook_b.org.dto.request.createRequest.NoteRequestCreate;
 import com.notebook_b.org.dto.request.createRequest.UserRequestCreate;
 import com.notebook_b.org.dto.request.updateRequest.UserRequestUpdate;
@@ -26,4 +27,8 @@ public interface IUserService {
     DataResult<NoteDto> addNoteToUser(NoteRequestCreate requestCreate);
 
     DataResult<AddressDto> addAddressToUser(AddressRequestCreate requestCreate);
+
+    DataResult<UserDto> getUserByNickName(String userNickName);
+
+    DataResult addLogToUser(LogUserRequestCreate requestCreate, String userNickName);
 }

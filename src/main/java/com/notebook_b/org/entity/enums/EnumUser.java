@@ -4,5 +4,8 @@ public enum EnumUser {
     LOGIN,
     LOGOUT,
     SIGN_IN,
-    UPDATED
+    CREATED,
+    UPDATED,
+    DELETED
+
 }

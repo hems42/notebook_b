@@ -13,7 +13,7 @@ import com.notebook_b.org.dto.request.createRequest.UserRequestCreate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+
 import java.util.List;
 
 @RestController
@@ -29,7 +29,7 @@ public class UserController implements IUserController {
 
     @PostMapping("/addUser")
     @Override
-    public ResponseEntity<DataResult<UserDto>> addUser(UserRequestCreate requestCreate) {
+    public ResponseEntity<DataResult<UserDto>> addUser(@RequestBody UserRequestCreate requestCreate) {
         return ResponseEntity.ok(userService.addUser(requestCreate));
     }
 
@@ -41,7 +41,7 @@ public class UserController implements IUserController {
 
     @PutMapping("/updateUserById{id}")
     @Override
-    public ResponseEntity<DataResult<UserDto>> updateUserById(@PathVariable String id, UserRequestUpdate requestUpdate) {
+    public ResponseEntity<DataResult<UserDto>> updateUserById(@PathVariable String id, @RequestBody UserRequestUpdate requestUpdate) {
         return ResponseEntity.ok(userService.updateUserById(id,requestUpdate));
     }
 
@@ -58,12 +58,12 @@ public class UserController implements IUserController {
     }
 
     @Override
-    public ResponseEntity<DataResult<NoteDto>> addNoteToUser(NoteRequestCreate requestCreate) {
+    public ResponseEntity<DataResult<NoteDto>> addNoteToUser(@RequestBody NoteRequestCreate requestCreate) {
         return null;
     }
 
     @Override
-    public ResponseEntity<DataResult<AddressDto>> addAddressToUser(AddressRequestCreate requestCreate) {
+    public ResponseEntity<DataResult<AddressDto>> addAddressToUser(@RequestBody AddressRequestCreate requestCreate) {
         return null;
     }
 }

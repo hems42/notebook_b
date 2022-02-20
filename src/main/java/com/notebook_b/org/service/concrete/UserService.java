@@ -1,10 +1,15 @@
 package com.notebook_b.org.service.concrete;
 
+import com.notebook_b.org.core.exceptions.UserNotFoundException;
 import com.notebook_b.org.dto.entity.AddressDto;
 import com.notebook_b.org.dto.entity.NoteDto;
 import com.notebook_b.org.dto.request.createRequest.AddressRequestCreate;
+import com.notebook_b.org.dto.request.createRequest.LogUserRequestCreate;
 import com.notebook_b.org.dto.request.createRequest.NoteRequestCreate;
 import com.notebook_b.org.dto.request.updateRequest.UserRequestUpdate;
+import com.notebook_b.org.entity.enums.EnumCrud;
+import com.notebook_b.org.entity.enums.EnumUser;
+import com.notebook_b.org.service.abstracts.ILogUserService;
 import com.notebook_b.org.service.abstracts.IUserService;
 import com.notebook_b.org.core.utilities.results.DataResult;
 import com.notebook_b.org.core.utilities.results.SuccessDataResult;
@@ -13,6 +18,10 @@ import com.notebook_b.org.dto.convertor.UserDtoConvertor;
 import com.notebook_b.org.dto.entity.UserDto;
 import com.notebook_b.org.dto.request.createRequest.UserRequestCreate;
 import com.notebook_b.org.entity.User;
+import javassist.NotFoundException;
+import org.omg.CosNaming.NamingContextPackage.NotFound;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -24,11 +33,18 @@ public class UserService implements IUserService {
 
     private final UserDao userDao;
     private final UserDtoConvertor userDtoConvertor;
+    private final ILogUserService logUserService;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
 
-    public UserService(UserDao userDao, UserDtoConvertor userDtoConvertor) {
+    public UserService(UserDao userDao,
+                       UserDtoConvertor userDtoConvertor,
+                       ILogUserService logUserService) {
         this.userDao = userDao;
         this.userDtoConvertor = userDtoConvertor;
+        this.logUserService = logUserService;
     }
 
     @Override
@@ -37,7 +53,7 @@ public class UserService implements IUserService {
                 null,
                 requestCreate.getNickName(),
                 requestCreate.getEmail(),
-                requestCreate.getPassword(),
+                passwordEncoder.encode(requestCreate.getPassword()),
                 true,
                 false,
                 LocalDateTime.now(),
@@ -45,7 +61,7 @@ public class UserService implements IUserService {
         );
 
         User userFound = userDao.save(user);
-
+        logUserService.addLogUser(new LogUserRequestCreate(EnumUser.CREATED),userFound);
         UserDto userDto = userDtoConvertor.convert(userFound);
 
         return new SuccessDataResult<UserDto>(userDto, "Kullanıcı Başarıyla Eklendi");
@@ -80,7 +96,7 @@ public class UserService implements IUserService {
     @Override
     public DataResult<UserDto> getUserById(String id) {
 
-        return new SuccessDataResult<UserDto>(userDtoConvertor.convert(userDao.getById(id)),"Kullanıcı Başarıyla Getirildi");
+        return new SuccessDataResult<UserDto>(userDtoConvertor.convert(userDao.getById(id)), "Kullanıcı Başarıyla Getirildi");
     }
 
     @Override
@@ -91,5 +107,29 @@ public class UserService implements IUserService {
     @Override
     public DataResult<AddressDto> addAddressToUser(AddressRequestCreate requestCreate) {
         return null;
+    }
+
+    @Override
+    public DataResult<UserDto> getUserByNickName(String userNickName) {
+        User userFound = userDao.getUserByNickName(userNickName);
+
+        UserDto userDto = userDtoConvertor.convert(userFound);
+
+        return new SuccessDataResult<UserDto>(userDto, "Kullanıcı Başarıyla Bulundu");
+    }
+
+    @Override
+    public DataResult addLogToUser(LogUserRequestCreate requestCreate, String userNickName) {
+
+        User user = userDao.getUserByNickName(userNickName);
+
+        if (user != null) {
+            logUserService.addLogUser(requestCreate, user);
+        }
+        else {
+            throw new UserNotFoundException(userNickName + " kullanıcı isimli sorgu bulunamadı");
+        }
+
+        return new SuccessDataResult(userNickName + "nickname kullanıcısı başarıyla loglandı " + requestCreate.getUserOperationType().toString());
     }
 }
