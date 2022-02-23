@@ -1,6 +1,9 @@
 package com.notebook_b.org.dto.entity;
 
+import com.notebook_b.org.entity.Role;
+
 import java.time.LocalDateTime;
+import java.util.Set;
 
 public class UserDto {
 
@@ -16,6 +19,8 @@ public class UserDto {
 
     private Boolean isRegistered;
 
+    private Set<Role> roles;
+
     private LocalDateTime createdDate;
 
     private LocalDateTime updatedDate;
@@ -30,7 +35,7 @@ public class UserDto {
             String password,
             Boolean isActive,
             Boolean isRegistered,
-            LocalDateTime createdDate,
+            Set<Role> roles, LocalDateTime createdDate,
             LocalDateTime updatedDate) {
         this.id = id;
         this.nickName = nickName;
@@ -38,6 +43,7 @@ public class UserDto {
         this.password = password;
         this.isActive = isActive;
         this.isRegistered = isRegistered;
+        this.roles = roles;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
     }
@@ -90,6 +96,14 @@ public class UserDto {
         isRegistered = registered;
     }
 
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
@@ -115,6 +129,7 @@ public class UserDto {
                 ", password='" + password + '\'' +
                 ", isActive=" + isActive +
                 ", isRegistered=" + isRegistered +
+                ", roles=" + roles +
                 ", createdDate=" + createdDate +
                 ", updatedDate=" + updatedDate +
                 '}';

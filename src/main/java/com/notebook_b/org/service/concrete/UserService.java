@@ -1,14 +1,14 @@
 package com.notebook_b.org.service.concrete;
 
-import com.notebook_b.org.core.exceptions.UserNotFoundException;
+import com.notebook_b.org.core.exceptions.AlReadyExistException;
+import com.notebook_b.org.core.exceptions.NotFoundException;
 import com.notebook_b.org.dto.entity.AddressDto;
 import com.notebook_b.org.dto.entity.NoteDto;
 import com.notebook_b.org.dto.request.createRequest.AddressRequestCreate;
 import com.notebook_b.org.dto.request.createRequest.LogUserRequestCreate;
 import com.notebook_b.org.dto.request.createRequest.NoteRequestCreate;
 import com.notebook_b.org.dto.request.updateRequest.UserRequestUpdate;
-import com.notebook_b.org.entity.enums.EnumCrud;
-import com.notebook_b.org.entity.enums.EnumUser;
+import com.notebook_b.org.core.constants.enums.EnumUser;
 import com.notebook_b.org.service.abstracts.ILogUserService;
 import com.notebook_b.org.service.abstracts.IUserService;
 import com.notebook_b.org.core.utilities.results.DataResult;
@@ -18,8 +18,6 @@ import com.notebook_b.org.dto.convertor.UserDtoConvertor;
 import com.notebook_b.org.dto.entity.UserDto;
 import com.notebook_b.org.dto.request.createRequest.UserRequestCreate;
 import com.notebook_b.org.entity.User;
-import javassist.NotFoundException;
-import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -49,22 +47,33 @@ public class UserService implements IUserService {
 
     @Override
     public DataResult<UserDto> addUser(UserRequestCreate requestCreate) {
-        User user = new User(
-                null,
-                requestCreate.getNickName(),
-                requestCreate.getEmail(),
-                passwordEncoder.encode(requestCreate.getPassword()),
-                true,
-                false,
-                LocalDateTime.now(),
-                null
-        );
+        User userDetected= userDao.getUserByNickNameOrEmail(requestCreate.getNickName(),requestCreate.getEmail());
 
-        User userFound = userDao.save(user);
-        logUserService.addLogUser(new LogUserRequestCreate(EnumUser.CREATED),userFound);
-        UserDto userDto = userDtoConvertor.convert(userFound);
+        if(userDetected==null)
+        {
+            User user = new User(
+                    null,
+                    requestCreate.getNickName(),
+                    requestCreate.getEmail(),
+                    passwordEncoder.encode(requestCreate.getPassword()),
+                    true,
+                    false,
+                    null,
+                    LocalDateTime.now(),
+                    null
+            );
 
-        return new SuccessDataResult<UserDto>(userDto, "Kullanıcı Başarıyla Eklendi");
+            User userFound = userDao.save(user);
+            logUserService.addLogUser(new LogUserRequestCreate(EnumUser.CREATED),userFound);
+            UserDto userDto = userDtoConvertor.convert(userFound);
+
+            return new SuccessDataResult<UserDto>(userDto, "Kullanıcı Başarıyla Eklendi");
+        }
+        else {
+            throw new AlReadyExistException(requestCreate.getNickName()+ " ve  " + requestCreate.getEmail() +
+                    " bilgileri verilen kullanıcı daha önce oluşturulmuştur...");
+        }
+
     }
 
     @Override
@@ -127,7 +136,7 @@ public class UserService implements IUserService {
             logUserService.addLogUser(requestCreate, user);
         }
         else {
-            throw new UserNotFoundException(userNickName + " kullanıcı isimli sorgu bulunamadı");
+            throw new NotFoundException(userNickName + " kullanıcı isimli sorgu bulunamadı");
         }
 
         return new SuccessDataResult(userNickName + "nickname kullanıcısı başarıyla loglandı " + requestCreate.getUserOperationType().toString());

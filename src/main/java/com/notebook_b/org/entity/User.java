@@ -8,6 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -35,6 +36,17 @@ public class User implements Serializable {
 
     @Column(name = "IsRegistered", nullable = false)
     private Boolean isRegistered;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "USER_ROLE",
+            joinColumns = {
+                    @JoinColumn(name = "UserId")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "RoleId")
+            }
+    )
+    private Set<Role> roles;
 
     @Column(name = "CreatedDate", updatable = false)
     private LocalDateTime createdDate;

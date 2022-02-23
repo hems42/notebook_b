@@ -8,4 +8,7 @@ public interface UserDao extends JpaRepository<User,String> {
 
     @Query("SELECT u FROM User u WHERE u.nickName = ?1")
     User getUserByNickName(String userNickName);
+
+    @Query("SELECT u FROM User u WHERE u.nickName = ?1 or u.email = ?2")
+    User getUserByNickNameOrEmail(String userNickName, String email);
 }

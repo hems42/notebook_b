@@ -1,5 +1,6 @@
-package com.notebook_b.org.security.concrete.jwt_security;
+package com.notebook_b.org.security.jwt_security;
 
+import com.notebook_b.org.core.constants.appConstant.AppConstants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -12,13 +13,13 @@ import java.util.Date;
 
 @Service
 public class JwtTokenManager {
-    private static final int validityTime = 5 * 60 * 1000;
+
     Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
 
     public String generateToken(String username) {
         Long createdDate=System.currentTimeMillis();
-        Long expirationDate=createdDate + validityTime;
+        Long expirationDate=createdDate + AppConstants.TOKEN_EXPERIMENT_TIME;
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuer("notebook_b")
@@ -47,35 +48,5 @@ public class JwtTokenManager {
     public boolean isExpired(String token) {
         Claims claims = getClaims(token);
         return claims.getExpiration().after(new Date(System.currentTimeMillis()));
-
-    /*
-    private static final int validity = 5 * 60 * 1000;
-    Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-
-    public String generateToken(String username) {
-        return Jwts.builder()
-                .setSubject(username)
-                .setIssuer("www.haydikodlayalim.com")
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + validity))
-                .signWith(key)
-                .compact();
-    }
-
-    public boolean tokenValidate(String token) {
-        if  {
-            return true;
-        }
-        return false;
-    }
-
-    public String getUsernameToken(String token) {
-        Claims claims = getClaims(token);
-        return claims.getSubject();
-    }
-
-
-    }*/
-
     }
 }

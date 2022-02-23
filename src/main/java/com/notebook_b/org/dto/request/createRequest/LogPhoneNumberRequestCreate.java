@@ -1,7 +1,7 @@
 package com.notebook_b.org.dto.request.createRequest;
 
 import com.notebook_b.org.entity.PhoneNumber;
-import com.notebook_b.org.entity.enums.EnumCrud;
+import com.notebook_b.org.core.constants.enums.EnumCrud;
 
 public class LogPhoneNumberRequestCreate {
 

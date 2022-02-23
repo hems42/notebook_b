@@ -1,4 +1,4 @@
-package com.notebook_b.org.security.concrete.jwt_security;
+package com.notebook_b.org.security.jwt_security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -17,13 +17,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class JwtWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private JwtTokenFilter jwtTokenFilter;
 
     @Autowired
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    private  JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Autowired
     public void configurePasswordEncoder(AuthenticationManagerBuilder builder) throws Exception {
@@ -43,11 +46,19 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .authorizeRequests().antMatchers("/api/login").permitAll()
-                .anyRequest().authenticated()
-                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+                http.cors()
+            .and()
+                .csrf().disable()
+                .authorizeRequests().antMatchers("/api/login","/api/signup","/api/logout").permitAll()
+                .anyRequest().authenticated()
+            .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+            .and()
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+
+
     }
 }

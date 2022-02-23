@@ -1,4 +1,4 @@
-package com.notebook_b.org.dto.request.login_request;
+package com.notebook_b.org.dto.request.authenticate_request;
 public class LoginRequest {
 
     private String userNickname;

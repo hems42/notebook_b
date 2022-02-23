@@ -1,6 +1,6 @@
 package com.notebook_b.org.dto.request.createRequest;
 
-import com.notebook_b.org.entity.enums.EnumUser;
+import com.notebook_b.org.core.constants.enums.EnumUser;
 
 public class LogUserRequestCreate {
 

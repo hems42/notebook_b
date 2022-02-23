@@ -1,4 +1,4 @@
-package com.notebook_b.org.entity.enums;
+package com.notebook_b.org.core.constants.enums;
 
 public enum EnumCrud {
     CREATED,

@@ -2,7 +2,7 @@ package com.notebook_b.org.entity.log;
 
 import com.notebook_b.org.entity.Note;
 import com.notebook_b.org.entity.User;
-import com.notebook_b.org.entity.enums.EnumCrud;
+import com.notebook_b.org.core.constants.enums.EnumCrud;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

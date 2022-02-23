@@ -1,8 +1,9 @@
 package com.notebook_b.org.entity.log;
 
-import com.notebook_b.org.entity.Address;
-import com.notebook_b.org.entity.User;
 import com.notebook_b.org.core.constants.enums.EnumCrud;
+import com.notebook_b.org.entity.PhoneNumber;
+import com.notebook_b.org.entity.Role;
+import com.notebook_b.org.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,8 +15,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "LogAddresses")
-public class LogAddress {
+@Table(name = "LogRoles")
+public class LogRole {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,8 +26,8 @@ public class LogAddress {
     private EnumCrud crud;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "AddressId",nullable = false)
-    private Address address;
+    @JoinColumn(name = "RoleId",nullable = false)
+    private Role role;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "UserId", nullable = false)
@@ -34,5 +35,4 @@ public class LogAddress {
 
     @Column(name = "CreatedDate", updatable = false)
     private LocalDateTime createdDate;
-
 }

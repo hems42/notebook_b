@@ -1,4 +1,4 @@
-package com.notebook_b.org.security.concrete.jwt_security;
+package com.notebook_b.org.security.jwt_security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

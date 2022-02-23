@@ -15,6 +15,7 @@ public class UserDtoConvertor {
                 from.getPassword(),
                 from.getActive(),
                 from.getRegistered(),
+                from.getRoles(),
                 from.getCreatedDate() == null ? null : from.getCreatedDate(),
                 from.getUpdatedDate() == null ? null : from.getUpdatedDate()
         );
@@ -28,6 +29,7 @@ public class UserDtoConvertor {
                 from.getPassword(),
                 from.getIsActive(),
                 from.getIsRegistered(),
+                from.getRoles(),
                 from.getCreatedDate() == null ? null : from.getCreatedDate(),
                 from.getUpdatedDate() == null ? null : from.getUpdatedDate()
 
