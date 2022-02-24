@@ -1,28 +1,19 @@
 package com.notebook_b.org;
 
+import com.notebook_b.org.repository.RoleDao;
+import com.notebook_b.org.repository.UserDao;
 import com.notebook_b.org.service.concrete.UserService;
-import com.notebook_b.org.dto.entity.UserDto;
-import com.notebook_b.org.dto.request.createRequest.UserRequestCreate;
-import io.swagger.models.Contact;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.ApiKey;
-import springfox.documentation.service.AuthorizationScope;
-import springfox.documentation.service.SecurityReference;
 import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 @SpringBootApplication
 @EnableSwagger2
@@ -30,6 +21,15 @@ public class NotebookBApplication implements CommandLineRunner {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    RoleDao roleDao;
+
+    @Autowired
+    UserDao  userDao;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     public static void main(String[] args) {
 
@@ -39,18 +39,31 @@ public class NotebookBApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        System.out.println("bulduğu kullanıcı : "+userService.getUserByNickName("vurucu").getData().getPassword());
 
-      /*  UserRequestCreate requestCreate= new UserRequestCreate(
-                "caglar",
-                "eflatun126@gmail.com",
-                "1122334455"
-        );
+    /*    Role role_1 = new Role(1,"ADMIN","all_permission has one",LocalDateTime.now(),null);
+        Role role_2 = new Role(2,"USER","user_permission has one",LocalDateTime.now(),null);
+        Role role_3 = new Role(3,"STUDENT","student_permission has one",LocalDateTime.now(),null);
 
-       UserDto userDto = userService.addUser(requestCreate).getData();
+        roleDao.save(role_1);
+     Role userRole =  roleDao.save(role_2);
+        roleDao.save(role_3);
 
-        System.out.println("kayıt başarılı");
-        System.out.println(userDto.toString());*/
+        HashSet<Role> roles = new HashSet<>();
+        roles.add(userRole);
+
+      User user =  userDao.save(new User(
+           "",
+           "hasan",
+           "hasan@hasan",
+                passwordEncoder.encode("hasan"),
+                true,
+                false,
+                roles,
+                LocalDateTime.now(),
+                LocalDateTime.now()
+        ));
+
+        System.out.println("kaydedilen kullanıcı : "+user.toString());*/
 
     }
 

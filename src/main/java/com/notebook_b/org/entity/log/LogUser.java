@@ -1,7 +1,7 @@
 package com.notebook_b.org.entity.log;
 
 import com.notebook_b.org.entity.User;
-import com.notebook_b.org.core.constants.enums.EnumUser;
+import com.notebook_b.org.product.appEnums.AppEnumUserOperations;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +21,7 @@ public class LogUser {
     private Integer id;
 
     @Enumerated(EnumType.STRING)
-    private EnumUser userOperationType;
+    private AppEnumUserOperations userOperationType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "UserId", nullable = false)

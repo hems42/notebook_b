@@ -2,7 +2,7 @@ package com.notebook_b.org.entity.log;
 
 import com.notebook_b.org.entity.Note;
 import com.notebook_b.org.entity.User;
-import com.notebook_b.org.core.constants.enums.EnumCrud;
+import com.notebook_b.org.product.appEnums.AppEnumCrud;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,7 +22,7 @@ public class LogNote {
     private Integer id;
 
     @Enumerated(EnumType.STRING)
-    private EnumCrud crud;
+    private AppEnumCrud crud;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "NoteId",nullable = false)

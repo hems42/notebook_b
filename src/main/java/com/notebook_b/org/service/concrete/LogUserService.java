@@ -1,7 +1,7 @@
 package com.notebook_b.org.service.concrete;
 
-import com.notebook_b.org.dto.convertor.LogUserDtoConvertor;
-import com.notebook_b.org.dto.request.createRequest.LogUserRequestCreate;
+import com.notebook_b.org.product.dto_convertor.log_convertor.LogUserDtoConvertor;
+import com.notebook_b.org.product.request.createRequest.LogUserRequestCreate;
 import com.notebook_b.org.entity.User;
 import com.notebook_b.org.entity.log.LogUser;
 import com.notebook_b.org.repository.LogUserDao;
@@ -24,7 +24,7 @@ public class LogUserService implements ILogUserService {
 
     @Override
     public void addLogUser(LogUserRequestCreate requestCreate, User user) {
-        LogUser logUser = new LogUser(null,requestCreate.getUserOperationType(),user, LocalDateTime.now());
-        logUserDao.save(logUser);
-    }
-}
+        logUserDao.save(new LogUser(
+                null,
+                requestCreate.getUserOperationType(),
+                user, LocalDateTime.now())); } }

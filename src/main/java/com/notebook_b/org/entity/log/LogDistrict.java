@@ -1,7 +1,7 @@
 package com.notebook_b.org.entity.log;
 
 import com.notebook_b.org.entity.User;
-import com.notebook_b.org.core.constants.enums.EnumCrud;
+import com.notebook_b.org.product.appEnums.AppEnumCrud;
 import com.notebook_b.org.entity.util.City;
 import com.notebook_b.org.entity.util.District;
 import lombok.AllArgsConstructor;
@@ -23,7 +23,7 @@ public class LogDistrict {
     private Integer id;
 
     @Enumerated(EnumType.STRING)
-    private EnumCrud crud;
+    private AppEnumCrud crud;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CityId", nullable = false)

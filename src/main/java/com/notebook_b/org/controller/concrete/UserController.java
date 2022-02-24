@@ -1,15 +1,15 @@
 package com.notebook_b.org.controller.concrete;
 
 import com.notebook_b.org.controller.abstracts.IUserController;
-import com.notebook_b.org.dto.entity.AddressDto;
-import com.notebook_b.org.dto.entity.NoteDto;
-import com.notebook_b.org.dto.request.createRequest.AddressRequestCreate;
-import com.notebook_b.org.dto.request.createRequest.NoteRequestCreate;
-import com.notebook_b.org.dto.request.updateRequest.UserRequestUpdate;
+import com.notebook_b.org.product.dto.AddressDto;
+import com.notebook_b.org.product.dto.NoteDto;
+import com.notebook_b.org.product.request.createRequest.AddressRequestCreate;
+import com.notebook_b.org.product.request.createRequest.NoteRequestCreate;
+import com.notebook_b.org.product.request.updateRequest.UserRequestUpdate;
 import com.notebook_b.org.service.concrete.UserService;
 import com.notebook_b.org.core.utilities.results.DataResult;
-import com.notebook_b.org.dto.entity.UserDto;
-import com.notebook_b.org.dto.request.createRequest.UserRequestCreate;
+import com.notebook_b.org.product.dto.UserDto;
+import com.notebook_b.org.product.request.createRequest.UserRequestCreate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

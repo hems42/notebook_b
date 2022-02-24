@@ -8,6 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -46,7 +47,7 @@ public class User implements Serializable {
                     @JoinColumn(name = "RoleId")
             }
     )
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
     @Column(name = "CreatedDate", updatable = false)
     private LocalDateTime createdDate;
