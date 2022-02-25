@@ -1,6 +1,6 @@
 package com.notebook_b.org.product.request.createRequest;
 
-import com.notebook_b.org.entity.PhoneNumber;
+import com.notebook_b.org.entity.communication.PhoneNumber;
 import com.notebook_b.org.product.appEnums.AppEnumCrud;
 
 public class LogPhoneNumberRequestCreate {

@@ -1,7 +1,7 @@
 package com.notebook_b.org.product.request.createRequest;
 
-import com.notebook_b.org.entity.util.City;
-import com.notebook_b.org.entity.util.District;
+import com.notebook_b.org.entity.communication.City;
+import com.notebook_b.org.entity.communication.District;
 
 public class AddressRequestCreate {
 

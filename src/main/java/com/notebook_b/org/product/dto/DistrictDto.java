@@ -1,6 +1,6 @@
 package com.notebook_b.org.product.dto;
 
-import com.notebook_b.org.entity.util.City;
+import com.notebook_b.org.entity.communication.City;
 
 import java.time.LocalDateTime;
 

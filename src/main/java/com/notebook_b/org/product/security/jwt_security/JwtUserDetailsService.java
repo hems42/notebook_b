@@ -1,11 +1,10 @@
 package com.notebook_b.org.product.security.jwt_security;
 
 import com.notebook_b.org.core.utilities.results.DataResult;
-import com.notebook_b.org.product.dto_convertor.entity_convertor.UserDtoConvertor;
+import com.notebook_b.org.product.dto_convertor.principal_convertor.UserDtoConvertor;
 import com.notebook_b.org.product.dto.UserDto;
-import com.notebook_b.org.entity.User;
+import com.notebook_b.org.entity.leadRole.User;
 import com.notebook_b.org.service.abstracts.IUserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,12 +14,14 @@ import javax.annotation.PostConstruct;
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    private IUserService userService;
+    private final IUserService userService;
 
-    @Autowired
-    private UserDtoConvertor userDtoConvertor;
+    private final UserDtoConvertor userDtoConvertor;
 
+    public JwtUserDetailsService(IUserService userService, UserDtoConvertor userDtoConvertor) {
+        this.userService = userService;
+        this.userDtoConvertor = userDtoConvertor;
+    }
 
 
     @PostConstruct
@@ -36,11 +37,12 @@ public class JwtUserDetailsService implements UserDetailsService {
         DataResult result =userService.getUserByNickName(username);
 
         UserDto userDto=result !=null ? (UserDto) result.getData() :null ;
-        User user =userDtoConvertor.convert(userDto);
 
-        if (user!=null) {
-            return new JwtUserDetail(user);
-        }
+        if (userDto!=null) {
+
+            User user =userDtoConvertor.convert(userDto);
+
+            return new JwtUserDetail(user); }
 
         throw new UsernameNotFoundException(username);
     }

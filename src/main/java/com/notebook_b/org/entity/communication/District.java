@@ -1,4 +1,4 @@
-package com.notebook_b.org.entity.util;
+package com.notebook_b.org.entity.communication;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,5 +1,6 @@
-package com.notebook_b.org.entity;
+package com.notebook_b.org.entity.communication;
 
+import com.notebook_b.org.entity.leadRole.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,4 +1,4 @@
-package com.notebook_b.org.core.exceptions;
+package com.notebook_b.org.core.exceptions.exceptionModel;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

@@ -20,7 +20,7 @@ public class JwtTokenManager {
                 .setIssuer(AppConstants.TOKEN_ISSUER)
                 .setIssuedAt(new Date(createdDate))
                 .setExpiration(new Date(expirationDate))
-                .signWith(AppConstants.TOKEN_ALGHORITHMA_KEY)
+                .signWith(AppConstants.TOKEN_ALGORITHM_KEY)
                 .compact();
     }
 
@@ -37,7 +37,7 @@ public class JwtTokenManager {
 
 
     private Claims getClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(AppConstants.TOKEN_ALGHORITHMA_KEY).build().parseClaimsJws(token).getBody();
+        return Jwts.parserBuilder().setSigningKey(AppConstants.TOKEN_ALGORITHM_KEY).build().parseClaimsJws(token).getBody();
     }
 
     public boolean isExpired(String token) {

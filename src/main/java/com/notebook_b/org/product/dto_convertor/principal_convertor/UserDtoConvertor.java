@@ -1,7 +1,7 @@
-package com.notebook_b.org.product.dto_convertor.entity_convertor;
+package com.notebook_b.org.product.dto_convertor.principal_convertor;
 
 import com.notebook_b.org.product.dto.UserDto;
-import com.notebook_b.org.entity.User;
+import com.notebook_b.org.entity.leadRole.User;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;

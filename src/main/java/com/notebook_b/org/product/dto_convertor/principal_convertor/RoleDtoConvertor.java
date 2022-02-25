@@ -1,7 +1,7 @@
-package com.notebook_b.org.product.dto_convertor.entity_convertor;
+package com.notebook_b.org.product.dto_convertor.principal_convertor;
 
 import com.notebook_b.org.product.dto.RoleDto;
-import com.notebook_b.org.entity.Role;
+import com.notebook_b.org.entity.security.Role;
 import org.springframework.stereotype.Component;
 
 @Component

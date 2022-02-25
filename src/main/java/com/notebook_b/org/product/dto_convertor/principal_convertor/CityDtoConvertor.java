@@ -1,7 +1,7 @@
-package com.notebook_b.org.product.dto_convertor.entity_convertor;
+package com.notebook_b.org.product.dto_convertor.principal_convertor;
 
 import com.notebook_b.org.product.dto.CityDto;
-import com.notebook_b.org.entity.util.City;
+import com.notebook_b.org.entity.communication.City;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,6 +1,6 @@
 package com.notebook_b.org.product.dto;
 
-import com.notebook_b.org.entity.Role;
+import com.notebook_b.org.entity.security.Role;
 
 import java.time.LocalDateTime;
 import java.util.Set;

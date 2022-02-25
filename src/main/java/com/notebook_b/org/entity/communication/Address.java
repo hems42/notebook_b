@@ -1,7 +1,5 @@
-package com.notebook_b.org.entity;
+package com.notebook_b.org.entity.communication;
 
-import com.notebook_b.org.entity.util.City;
-import com.notebook_b.org.entity.util.District;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

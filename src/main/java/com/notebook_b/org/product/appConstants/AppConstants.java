@@ -15,6 +15,6 @@ public class AppConstants {
 
    public static final String TOKEN_START_WITH ="Bearer ";
 
-   public static final SecretKey TOKEN_ALGHORITHMA_KEY=Keys.secretKeyFor(SignatureAlgorithm.HS256);
+   public static final SecretKey TOKEN_ALGORITHM_KEY =Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
 }

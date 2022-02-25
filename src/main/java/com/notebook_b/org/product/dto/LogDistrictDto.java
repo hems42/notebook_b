@@ -1,9 +1,9 @@
 package com.notebook_b.org.product.dto;
 
-import com.notebook_b.org.entity.User;
+import com.notebook_b.org.entity.leadRole.User;
 import com.notebook_b.org.product.appEnums.AppEnumCrud;
-import com.notebook_b.org.entity.util.City;
-import com.notebook_b.org.entity.util.District;
+import com.notebook_b.org.entity.communication.City;
+import com.notebook_b.org.entity.communication.District;
 
 import java.time.LocalDateTime;
 

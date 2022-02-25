@@ -1,7 +1,7 @@
-package com.notebook_b.org.product.dto_convertor.entity_convertor;
+package com.notebook_b.org.product.dto_convertor.principal_convertor;
 
 import com.notebook_b.org.product.dto.PhoneNumberDto;
-import com.notebook_b.org.entity.PhoneNumber;
+import com.notebook_b.org.entity.communication.PhoneNumber;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,5 +1,6 @@
-package com.notebook_b.org.entity;
+package com.notebook_b.org.entity.leadRole;
 
+import com.notebook_b.org.entity.security.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "Users")
-public class User implements Serializable {
+public class   User implements Serializable {
 
     @Id
     @GeneratedValue(generator = "UUID")

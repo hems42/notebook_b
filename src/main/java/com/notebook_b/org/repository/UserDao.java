@@ -1,6 +1,6 @@
 package com.notebook_b.org.repository;
 
-import com.notebook_b.org.entity.User;
+import com.notebook_b.org.entity.leadRole.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

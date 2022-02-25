@@ -1,6 +1,6 @@
 package com.notebook_b.org.entity.log;
 
-import com.notebook_b.org.entity.User;
+import com.notebook_b.org.entity.leadRole.User;
 import com.notebook_b.org.product.appEnums.AppEnumUserOperations;
 import lombok.AllArgsConstructor;
 import lombok.Data;

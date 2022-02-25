@@ -1,7 +1,7 @@
-package com.notebook_b.org.product.dto_convertor.entity_convertor;
+package com.notebook_b.org.product.dto_convertor.principal_convertor;
 
 import com.notebook_b.org.product.dto.NoteDto;
-import com.notebook_b.org.entity.Note;
+import com.notebook_b.org.entity.aim.Note;
 import org.springframework.stereotype.Component;
 
 @Component

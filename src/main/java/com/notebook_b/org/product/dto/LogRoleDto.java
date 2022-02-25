@@ -1,7 +1,7 @@
 package com.notebook_b.org.product.dto;
 
-import com.notebook_b.org.entity.Role;
-import com.notebook_b.org.entity.User;
+import com.notebook_b.org.entity.security.Role;
+import com.notebook_b.org.entity.leadRole.User;
 import com.notebook_b.org.product.appEnums.AppEnumCrud;
 
 import java.time.LocalDateTime;

@@ -1,6 +1,6 @@
 package com.notebook_b.org.product.security.jwt_security;
 
-import com.notebook_b.org.entity.User;
+import com.notebook_b.org.entity.leadRole.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

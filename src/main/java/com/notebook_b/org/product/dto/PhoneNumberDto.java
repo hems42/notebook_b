@@ -1,6 +1,6 @@
 package com.notebook_b.org.product.dto;
 
-import com.notebook_b.org.entity.User;
+import com.notebook_b.org.entity.leadRole.User;
 import java.time.LocalDateTime;
 
 public class PhoneNumberDto {

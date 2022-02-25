@@ -1,35 +1,32 @@
-package com.notebook_b.org.entity;
+package com.notebook_b.org.entity.communication;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Roles")
-public class Role implements Serializable {
+@Table(name = "Cities")
+public class City {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer rolId;
+    private Integer id;
 
-    @Column(name = "RoleName", length = 50, unique = true, nullable = false)
-    private String roleName;
+    @Column(name = "CityName",nullable = false,length = 60)
+    private String cityName;
 
-    @Column(name = "RoleDescription", length = 100)
-    private String roleDescription;
+    @Column(name = "PlateCode",nullable = false,length = 10)
+    private String plateCode;
 
     @Column(name = "CreatedDate", updatable = false)
     private LocalDateTime createdDate;
 
     @Column(name = "UpdatedDate", insertable = false)
     private LocalDateTime updatedDate;
-
 }

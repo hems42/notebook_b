@@ -2,7 +2,7 @@ package com.notebook_b.org.service.concrete;
 
 import com.notebook_b.org.product.dto_convertor.log_convertor.LogUserDtoConvertor;
 import com.notebook_b.org.product.request.createRequest.LogUserRequestCreate;
-import com.notebook_b.org.entity.User;
+import com.notebook_b.org.entity.leadRole.User;
 import com.notebook_b.org.entity.log.LogUser;
 import com.notebook_b.org.repository.LogUserDao;
 import com.notebook_b.org.service.abstracts.ILogUserService;

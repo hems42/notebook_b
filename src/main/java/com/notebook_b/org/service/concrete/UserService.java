@@ -1,7 +1,8 @@
 package com.notebook_b.org.service.concrete;
 
-import com.notebook_b.org.core.exceptions.AlReadyExistException;
-import com.notebook_b.org.core.exceptions.NotFoundException;
+import com.notebook_b.org.core.constants.coreEnums.CoreEnumExceptionMessages;
+import com.notebook_b.org.core.exceptions.exceptionModel.AlReadyExistException;
+import com.notebook_b.org.core.exceptions.exceptionModel.NotFoundException;
 import com.notebook_b.org.product.dto.AddressDto;
 import com.notebook_b.org.product.dto.NoteDto;
 import com.notebook_b.org.product.request.createRequest.AddressRequestCreate;
@@ -14,10 +15,10 @@ import com.notebook_b.org.service.abstracts.IUserService;
 import com.notebook_b.org.core.utilities.results.DataResult;
 import com.notebook_b.org.core.utilities.results.SuccessDataResult;
 import com.notebook_b.org.repository.UserDao;
-import com.notebook_b.org.product.dto_convertor.entity_convertor.UserDtoConvertor;
+import com.notebook_b.org.product.dto_convertor.principal_convertor.UserDtoConvertor;
 import com.notebook_b.org.product.dto.UserDto;
 import com.notebook_b.org.product.request.createRequest.UserRequestCreate;
-import com.notebook_b.org.entity.User;
+import com.notebook_b.org.entity.leadRole.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @Service
 public class UserService implements IUserService {
@@ -68,8 +70,7 @@ public class UserService implements IUserService {
 
             return new SuccessDataResult<>(userDto, "Kullanıcı Başarıyla Eklendi");
         } else {
-            throw new AlReadyExistException(requestCreate.getNickName() + " ve  " + requestCreate.getEmail() +
-                    " bilgileri verilen kullanıcı daha önce oluşturulmuştur...");
+            throw new AlReadyExistException(CoreEnumExceptionMessages.USER_ALREADY_EXIST,"kullanıcı daha önce oluşturulmuş koç");
         }
 
     }

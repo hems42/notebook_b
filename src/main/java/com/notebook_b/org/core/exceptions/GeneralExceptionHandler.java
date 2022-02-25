@@ -1,4 +1,8 @@
 package com.notebook_b.org.core.exceptions;
+import com.notebook_b.org.core.exceptions.abstracts.BaseExceptionModel;
+import com.notebook_b.org.core.exceptions.exceptionModel.AlReadyExistException;
+import com.notebook_b.org.core.exceptions.exceptionModel.NotFoundException;
+import com.sun.deploy.net.HttpResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
+public class  GeneralExceptionHandler extends ResponseEntityExceptionHandler {
 
     @NotNull
     @Override
@@ -40,13 +44,23 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(AlReadyExistException.class)
     public ResponseEntity<?> alReadyExistUserExceptionHandler(AlReadyExistException exception)  {
+
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_ACCEPTABLE);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> baseExceptionHandler(Exception exception)
     {
+
         return new ResponseEntity<>(exception.getMessage(),HttpStatus.BAD_REQUEST);
     }
+
+  /*  private HttpResponse convertExceptionModelToResponse(BaseExceptionModel exceptionModel)
+    {
+        return new ResponseEntity(
+                HttpStatus.MULTI_STATUS,
+
+        );
+    }*/
 
 }

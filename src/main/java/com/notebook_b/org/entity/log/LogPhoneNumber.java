@@ -1,7 +1,7 @@
 package com.notebook_b.org.entity.log;
 
-import com.notebook_b.org.entity.PhoneNumber;
-import com.notebook_b.org.entity.User;
+import com.notebook_b.org.entity.communication.PhoneNumber;
+import com.notebook_b.org.entity.leadRole.User;
 import com.notebook_b.org.product.appEnums.AppEnumCrud;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,6 +1,5 @@
 package com.notebook_b.org.product.security.jwt_security;
 
-import com.notebook_b.org.product.appConstants.AppConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,8 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static com.notebook_b.org.product.appConstants.AppConstants.*;
+
 @Component
-public class JwtTokenFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtTokenManager jwtTokenManager;
@@ -29,27 +30,26 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         /**
          * "Bearer 123hab2355"
          */
-        final String authHeader = httpServletRequest.getHeader(AppConstants.AUTH_HEADER);
+        final String authHeader = httpServletRequest.getHeader(AUTH_HEADER);
 
         String username = null;
         String token = null;
 
 
-        if (authHeader != null && authHeader.contains(AppConstants.TOKEN_START_WITH)) {
-            token = authHeader.substring(AppConstants.TOKEN_START_WITH.length());
+        if (authHeader != null && authHeader.contains(TOKEN_START_WITH)) {
+            token = authHeader.substring(TOKEN_START_WITH.length());
             try {
                 username = jwtTokenManager.getUserNameFromToken(token);
             } catch (Exception e) {
-                System.out.println(e.getMessage());
             }
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             if (jwtTokenManager.validateToken(token)) {
-                UsernamePasswordAuthenticationToken upassToken =
+                UsernamePasswordAuthenticationToken userNamePasswordAuthenticationToken =
                         new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>());
-                upassToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
-                SecurityContextHolder.getContext().setAuthentication(upassToken);
+                userNamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
+                SecurityContextHolder.getContext().setAuthentication(userNamePasswordAuthenticationToken);
             }
         }
 
