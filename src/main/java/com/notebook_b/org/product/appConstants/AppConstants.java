@@ -17,4 +17,6 @@ public class AppConstants {
 
    public static final SecretKey TOKEN_ALGORITHM_KEY =Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
+   public static Long REFRESH_TOKEN_DURATION_DAY = 3 * 86400000l;
+
 }

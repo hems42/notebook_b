@@ -9,7 +9,7 @@ public enum CoreEnumExceptionMessages {
     * -NotFoundException : 1993
     * -NotAuthenticateException : 1995
     * -NotAuthorizeException : 1996
-    * -
+    * -NotValidException : 1770
 
 
 
@@ -24,11 +24,16 @@ public enum CoreEnumExceptionMessages {
 
     Note : 1114
 
-
-
-
+    Token : 1115
      */
+
+
+
+
+    //AUTHENTICATION
     UNAUTHORIZED_REQUEST("UNAUTHORIZED_REQUEST",1996),
+
+    NOT_VALID_REFRESH_TOKEN("EXPIRED_REFRESH_TOKEN",1115),
 
     ROLE_ALREADY_EXIST("ALREADY_EXIST_ROLE", 1112),
 

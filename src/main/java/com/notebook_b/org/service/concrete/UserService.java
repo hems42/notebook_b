@@ -70,7 +70,7 @@ public class UserService implements IUserService {
 
             return new SuccessDataResult<>(userDto, "Kullanıcı Başarıyla Eklendi");
         } else {
-            throw new AlReadyExistException(CoreEnumExceptionMessages.USER_ALREADY_EXIST,"kullanıcı daha önce oluşturulmuş koç");
+            throw new AlReadyExistException(CoreEnumExceptionMessages.USER_ALREADY_EXIST, "kullanıcı daha önce oluşturulmuş koç");
         }
 
     }
@@ -141,7 +141,17 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public DataResult<UserDto> logInUser(String userNickName) {
+    public DataResult addLogInLogToUser(String userNickName) {
         return addLogToUser(new LogUserRequestCreate(AppEnumUserOperations.LOG_IN), userNickName);
+    }
+
+    @Override
+    public DataResult addLogOutLogToUser(String userNickName) {
+        return addLogToUser(new LogUserRequestCreate(AppEnumUserOperations.LOG_OUT), userNickName);
+    }
+
+    @Override
+    public DataResult addSıgnUpLogToUser(String userNickName) {
+        return addLogToUser(new LogUserRequestCreate(AppEnumUserOperations.SIGN_UP), userNickName);
     }
 }

@@ -32,5 +32,9 @@ public interface IUserService {
 
     DataResult addLogToUser(LogUserRequestCreate requestCreate, String userNickName);
 
-    DataResult<UserDto> logInUser(String userNickName);
+    DataResult addLogInLogToUser(String userNickName);
+
+    DataResult addLogOutLogToUser(String userNickName);
+
+    DataResult addSıgnUpLogToUser(String userNickName);
 }

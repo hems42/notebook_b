@@ -38,7 +38,7 @@ public class AuthenticationController implements IAuthenticationController {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getUserNickname(),
                             loginRequest.getPassword()));
-         UserDto userDto =  userService.logInUser(loginRequest.getUserNickname()).getData();
+         UserDto userDto = (UserDto) userService.addLogInLogToUser(loginRequest.getUserNickname()).getData();
 
            String accessToken=tokenManager.generateToken(loginRequest.getUserNickname());
             return ResponseEntity.ok(new LoginResponse(userDto,accessToken,null));

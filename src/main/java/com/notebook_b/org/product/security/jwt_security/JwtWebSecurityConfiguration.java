@@ -50,7 +50,7 @@ public class JwtWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 http.cors()
             .and()
                 .csrf().disable()
-                .authorizeRequests().antMatchers("/api/authentication/login","/api/authentication/signup","/api/authentication/logout").permitAll()
+                .authorizeRequests().antMatchers("/api/authentication/**").permitAll()
                 .anyRequest().authenticated()
             .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
