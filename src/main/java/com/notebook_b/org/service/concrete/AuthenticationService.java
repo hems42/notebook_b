@@ -58,11 +58,14 @@ public class AuthenticationService implements IAuthenticationService {
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(createdUser);
         refreshTokenService.saveRefreshToken(refreshToken);
 
-        registrationService.register(new RegistrationRequest(
-                signupRequest.getUserNickName(),
+        new Thread(() -> registrationService
+                .register(new RegistrationRequest(signupRequest.getUserNickName(),
                 signupRequest.geteMail(),
-                signupRequest.getPassword()
-        ),createdUser);
+                signupRequest.getPassword()),
+                createdUser))
+                .start();
+
+
 
         return new SignUpResponse(
                 accessTokenResponse,

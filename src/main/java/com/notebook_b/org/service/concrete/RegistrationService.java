@@ -53,7 +53,7 @@ public class RegistrationService implements IRegistrationService {
             emailSenderService.sendSimpleMessage(request.getEmail(),
                     "click the link for  register your account now!!!",
                     buildEmail(request.getUserNickName(), link)
-                    );
+            );
             return token.getConfirmationToken();
 
         } else {
