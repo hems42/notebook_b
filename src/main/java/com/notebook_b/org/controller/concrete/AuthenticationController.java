@@ -3,6 +3,7 @@ package com.notebook_b.org.controller.concrete;
 import com.notebook_b.org.controller.abstracts.IAuthenticationController;
 import com.notebook_b.org.core.constants.coreEnums.CoreEnumExceptionMessages;
 import com.notebook_b.org.core.exceptions.exceptionModel.NotFoundException;
+import com.notebook_b.org.core.exceptions.exceptionModel.UnSuccessfulException;
 import com.notebook_b.org.product.dto.UserDto;
 import com.notebook_b.org.product.request.createRequest.LogUserRequestCreate;
 import com.notebook_b.org.product.request.authenticate.LoginRequest;
@@ -73,10 +74,11 @@ public class AuthenticationController implements IAuthenticationController {
 
 
 
-    @PostMapping("/refreshToken")
-    public void refreshToken() {
+    @GetMapping("/refreshToken")
+    public ResponseEntity<?> refreshToken() {
 
-        throw  new NotFoundException(CoreEnumExceptionMessages.NOT_VALID_REFRESH_TOKEN_EXPIRED,"bu bir denemedir adamım");
+        throw  new NotFoundException(CoreEnumExceptionMessages.NOT_FOUND_ACCESS_TOKEN,"token yok amına koduum nerde token yavşak");
+
     }
 
 

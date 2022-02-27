@@ -8,13 +8,12 @@ import com.notebook_b.org.product.response.SignUpResponse;
 
 public interface IAuthenticationService {
 
-    LoginResponse logIn(LoginRequest loginRequest);
-
-    LogoutRequest logOut(LogoutRequest logoutRequest);
-
     SignUpResponse signUp(SignUpRequest signupRequest);
 
     void register();
 
+    LoginResponse logIn(LoginRequest loginRequest);
+
     void refreshToken();
-}
+
+    LogoutRequest logOut(LogoutRequest logoutRequest);}

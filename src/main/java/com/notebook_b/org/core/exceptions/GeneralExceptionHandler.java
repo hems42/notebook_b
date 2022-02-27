@@ -1,11 +1,10 @@
 package com.notebook_b.org.core.exceptions;
+
 import com.notebook_b.org.core.exceptions.abstracts.BaseExceptionModel;
-import com.notebook_b.org.core.exceptions.exceptionModel.AlReadyExistException;
-import com.notebook_b.org.core.exceptions.exceptionModel.NotFoundException;
-import com.sun.deploy.net.HttpResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-public class  GeneralExceptionHandler extends ResponseEntityExceptionHandler {
+public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
 
     @NotNull
     @Override
@@ -27,7 +26,7 @@ public class  GeneralExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   @NotNull HttpStatus status,
                                                                   @NotNull WebRequest request) {
         Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach(error ->{
+        ex.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
@@ -36,31 +35,42 @@ public class  GeneralExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
-
-    @ExceptionHandler(NotFoundException.class)
-    public NotFoundException userNotFoundExceptionHandler(NotFoundException exception)  {
-        return exception;
-    }
-
-    @ExceptionHandler(AlReadyExistException.class)
-    public ResponseEntity<?> alReadyExistUserExceptionHandler(AlReadyExistException exception)  {
-
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+    @ExceptionHandler(BaseExceptionModel.class)
+    public ResponseEntity<?> baseExceptionModelExceptionHandler(BaseExceptionModel exception) {
+        return convertCustomException(exception, exception.getBaseStatusCode());
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> baseExceptionHandler(Exception exception)
-    {
+    public ResponseEntity<?> baseExceptionHandler(Exception exception) {
 
-        return new ResponseEntity<>(exception.getMessage(),HttpStatus.BAD_REQUEST);
+        MultiValueMap<String, String> headers = new HttpHeaders();
+        headers.add("baslık", "bu bir başlık denemesidir");
+        headers.add("baslık", "bu bir başlık denemesidir");
+        headers.add("baslık", "bu bir başlık denemesidir");
+        headers.add("baslık", "bu bir başlık denemesidir");
+        headers.add("baslık", "bu bir başlık denemesidir");
+        headers.add("baslık", "bu bir başlık denemesidir");
+        headers.add("baslık", "bu bir başlık denemesidir");
+        ResponseEntity responseEntity = new ResponseEntity(exception, headers, HttpStatus.BAD_REQUEST);
+
+
+        return responseEntity;
     }
 
-  /*  private HttpResponse convertExceptionModelToResponse(BaseExceptionModel exceptionModel)
-    {
-        return new ResponseEntity(
-                HttpStatus.MULTI_STATUS,
 
-        );
-    }*/
+    private ResponseEntity convertCustomException(BaseExceptionModel exceptionModel, HttpStatus httpStatus) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("errorFlag", "true");
+
+        Map<String, String> body = new HashMap<>();
+        body.put("errorCode", exceptionModel.getErrorCode());
+        body.put("errorMessage", exceptionModel.getErrorMessage());
+        body.put("errorDescription", exceptionModel.getErrorDescription());
+
+        return new ResponseEntity<>(
+                body, headers, httpStatus);
+    }
 
 }
+
+
