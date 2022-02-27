@@ -8,6 +8,7 @@ import com.notebook_b.org.core.utilities.results.SuccessDataResult;
 import com.notebook_b.org.entity.security.Role;
 import com.notebook_b.org.entity.leadRole.User;
 import com.notebook_b.org.product.appEnums.AppEnumCrud;
+import com.notebook_b.org.product.appEnums.AppEnumRoleTypes;
 import com.notebook_b.org.product.dto_convertor.principal_convertor.RoleDtoConvertor;
 import com.notebook_b.org.product.dto.RoleDto;
 import com.notebook_b.org.product.request.createRequest.LogRoleRequestCreate;
@@ -63,6 +64,11 @@ public class RoleService implements IRoleService {
         } else {
             throw new AlReadyExistException(ALREADY_EXIST_ROLE,"role daha önce oluşturulmuş!!!");
         } }
+
+    @Override
+    public DataResult<Role> getRoleByRoleName(AppEnumRoleTypes role) {
+       return new SuccessDataResult<>(roleDao.getRoleByRoleName(role.getRoleName()));
+    }
 
     @Override
     public List<DataResult<RoleDto>> getAllRole() {

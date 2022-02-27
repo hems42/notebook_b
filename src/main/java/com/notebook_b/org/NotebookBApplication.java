@@ -198,4 +198,10 @@ public Docket api() {
                 "API license URL",
                 Collections.emptyList());
     }*/
+
+/*
+    @Bean
+    public BCryptPasswordEncoder getBCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }*/
 }

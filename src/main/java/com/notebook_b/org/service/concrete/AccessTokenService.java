@@ -1,8 +1,11 @@
 package com.notebook_b.org.service.concrete;
 
+import com.notebook_b.org.product.response.AccessTokenResponse;
 import com.notebook_b.org.product.security.jwt_security.JwtTokenManager;
 import com.notebook_b.org.service.abstracts.IAccessTokenService;
-import org.springframework.stereotype.Component;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 
@@ -11,12 +14,21 @@ public class AccessTokenService implements IAccessTokenService {
 
    private final JwtTokenManager tokenManager;
 
-   public AccessTokenService(JwtTokenManager tokenManager) {
-        this.tokenManager = tokenManager;
+   private final AuthenticationManager authenticationManager;
+
+   public AccessTokenService(JwtTokenManager tokenManager, AuthenticationManager authenticationManager) {
+       this.tokenManager = tokenManager;
+       this.authenticationManager = authenticationManager;
+   }
+
+    @Override
+    public Authentication authenticateUser(String userName, String password) {
+        return authenticationManager.authenticate(getSecurityUser(userName,password));
     }
 
     @Override
-    public String createAccessTokenWithUserName(String userNickName){ return tokenManager.generateToken(userNickName); }
+    public AccessTokenResponse createAccessTokenWithUserName(String userNickName){
+       return new AccessTokenResponse(tokenManager.generateToken(userNickName)); }
 
     @Override
     public Boolean verifyAccessToken(String accessToken)
@@ -30,5 +42,9 @@ public class AccessTokenService implements IAccessTokenService {
     @Override
     public Boolean isNotExpired(String accessToken) {
         return tokenManager.isNotExpired(accessToken);
+    }
+
+    private UsernamePasswordAuthenticationToken getSecurityUser(String userNickName,String password){
+        return new UsernamePasswordAuthenticationToken(userNickName,password);
     }
 }

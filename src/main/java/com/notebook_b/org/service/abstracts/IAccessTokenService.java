@@ -1,8 +1,13 @@
 package com.notebook_b.org.service.abstracts;
 
+import com.notebook_b.org.product.response.AccessTokenResponse;
+import org.springframework.security.core.Authentication;
+
 public interface IAccessTokenService {
 
-    String createAccessTokenWithUserName(String userNickName);
+    Authentication authenticateUser(String userName, String password);
+
+    AccessTokenResponse createAccessTokenWithUserName(String userNickName);
 
     Boolean verifyAccessToken(String accessToken);
 

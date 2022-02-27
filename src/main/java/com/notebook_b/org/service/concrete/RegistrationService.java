@@ -7,6 +7,7 @@ import com.notebook_b.org.core.utilities.outSourceServiceAdapter.abstracts.IEmai
 import com.notebook_b.org.core.utilities.outSourceServiceAdapter.abstracts.IEmailSenderService;
 import com.notebook_b.org.entity.leadRole.User;
 import com.notebook_b.org.entity.security.ConfirmationToken;
+import com.notebook_b.org.product.appConstants.AppConstants;
 import com.notebook_b.org.product.request.authenticate.RegistrationRequest;
 import com.notebook_b.org.service.abstracts.IAccessTokenService;
 import com.notebook_b.org.service.abstracts.IConfirmationTokenService;
@@ -47,9 +48,12 @@ public class RegistrationService implements IRegistrationService {
 
             confirmationTokenService.saveConfirmationToken(token);
 
-            String link = "http://localhost:8080/api/authentication/registration?confirmToken=" + token;
-            emailSenderService.sendSimpleMessage(request.getEmail(), buildEmail(request.getUserNickName(), link),
-                    "click the link for  register your account now!!!");
+            String link = AppConstants.MAIL_SEND_LINK + token.getConfirmationToken();
+
+            emailSenderService.sendSimpleMessage(request.getEmail(),
+                    "click the link for  register your account now!!!",
+                    buildEmail(request.getUserNickName(), link)
+                    );
             return token.getConfirmationToken();
 
         } else {
