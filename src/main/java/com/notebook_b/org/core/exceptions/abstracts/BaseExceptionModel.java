@@ -1,6 +1,5 @@
 package com.notebook_b.org.core.exceptions.abstracts;
 
-
 import com.notebook_b.org.core.constants.coreEnums.CoreEnumExceptionMessages;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -10,7 +9,6 @@ public abstract class BaseExceptionModel extends RuntimeException {
     private String errorMessage;
     private String errorDescription;
     private String baseErrorCode;
-
     private CoreEnumExceptionMessages coreEnumExceptionMessages;
 
     public BaseExceptionModel(CoreEnumExceptionMessages coreEnumExceptionMessages,
@@ -26,7 +24,7 @@ public abstract class BaseExceptionModel extends RuntimeException {
 
     }
 
-    public Integer getErrorCode() {
+    public String getErrorCode() {
         return convertToSuperErrorCode();
     }
 
@@ -38,9 +36,9 @@ public abstract class BaseExceptionModel extends RuntimeException {
         return errorDescription;
     }
 
-    private Integer convertToSuperErrorCode() {
+    private String convertToSuperErrorCode() {
         String foundErrorCode = coreEnumExceptionMessages.getExceptionCode().toString();
-        return Integer.parseInt(baseErrorCode + foundErrorCode);
+        return baseErrorCode + foundErrorCode;
     }
 
 

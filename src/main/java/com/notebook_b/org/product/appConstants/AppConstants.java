@@ -7,7 +7,7 @@ import javax.crypto.SecretKey;
 
 public class AppConstants {
 
-   public static final Integer TOKEN_EXPERIMENT_TIME = 3 * 60 * 1000;
+   public static final Integer ACCESS_TOKEN_EXPERIMENT_TIME = 3 * 60 * 1000;
 
    public static final String TOKEN_ISSUER = "notebook_b";
 
@@ -17,6 +17,8 @@ public class AppConstants {
 
    public static final SecretKey TOKEN_ALGORITHM_KEY =Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-   public static Long REFRESH_TOKEN_DURATION_DAY = 3 * 86400000l;
+   public static Long REFRESH_TOKEN_EXPERIMENT_TIME = 3 * 86400000l; // DAY
+
+   public static Long CONFIRMATION_TOKEN_EXPERIMENT_TIME = 15l; // MINUTE
 
 }

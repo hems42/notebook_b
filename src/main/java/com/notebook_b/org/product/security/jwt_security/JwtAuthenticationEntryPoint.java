@@ -8,6 +8,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
+import javax.activation.MimeType;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,6 +24,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.addHeader("errorCode",exceptionModel.getErrorCode().toString());
         response.addHeader("errorMessage", exceptionModel.getErrorMessage());
         response.addHeader("errorDescription", exceptionModel.getErrorDescription());
+        
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
 
     }

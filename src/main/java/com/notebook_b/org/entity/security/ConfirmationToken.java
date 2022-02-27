@@ -25,10 +25,10 @@ public class ConfirmationToken  {
     )
     private User user;
 
-    @Column(name ="ConfirmationToken",nullable = false )
+    @Column(name ="ConfirmationToken",nullable = false,unique = true )
     private String confirmationToken;
 
-    @Column(name ="CreatedAt",nullable = false )
+    @Column(name ="CreatedAt",nullable = false ,updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name ="ExpiresAt",nullable = false )

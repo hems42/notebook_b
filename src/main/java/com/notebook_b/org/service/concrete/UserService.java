@@ -19,6 +19,7 @@ import com.notebook_b.org.product.dto_convertor.principal_convertor.UserDtoConve
 import com.notebook_b.org.product.dto.UserDto;
 import com.notebook_b.org.product.request.createRequest.UserRequestCreate;
 import com.notebook_b.org.entity.leadRole.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+@Slf4j
 @Service
 public class UserService implements IUserService {
 
@@ -70,7 +71,7 @@ public class UserService implements IUserService {
 
             return new SuccessDataResult<>(userDto, "Kullanıcı Başarıyla Eklendi");
         } else {
-            throw new AlReadyExistException(CoreEnumExceptionMessages.USER_ALREADY_EXIST, "kullanıcı daha önce oluşturulmuş koç");
+            throw new AlReadyExistException(CoreEnumExceptionMessages.ALREADY_EXIST_USER, "kullanıcı daha önce oluşturulmuş koç");
         }
 
     }
@@ -134,7 +135,7 @@ public class UserService implements IUserService {
         if (user != null) {
             logUserService.addLogUser(requestCreate, user);
         } else {
-            throw new NotFoundException(userNickName + " kullanıcı isimli sorgu bulunamadı");
+            throw new NotFoundException(CoreEnumExceptionMessages.NOT_VALID_REFRESH_TOKEN_EXPIRED,"");
         }
 
         return new SuccessDataResult<>(userDtoConvertor.convert(user), userNickName + "nickname kullanıcısı başarıyla loglandı " + requestCreate.getUserOperationType().toString());
@@ -151,7 +152,12 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public DataResult addSıgnUpLogToUser(String userNickName) {
+    public DataResult addSignUpLogToUser(String userNickName) {
         return addLogToUser(new LogUserRequestCreate(AppEnumUserOperations.SIGN_UP), userNickName);
+    }
+
+    @Override
+    public Boolean setConfirmedUser(User user) {
+        return null;
     }
 }

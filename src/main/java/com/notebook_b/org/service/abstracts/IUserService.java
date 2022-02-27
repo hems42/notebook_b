@@ -1,6 +1,7 @@
 package com.notebook_b.org.service.abstracts;
 
 import com.notebook_b.org.core.utilities.results.DataResult;
+import com.notebook_b.org.entity.leadRole.User;
 import com.notebook_b.org.product.dto.AddressDto;
 import com.notebook_b.org.product.dto.NoteDto;
 import com.notebook_b.org.product.dto.UserDto;
@@ -36,5 +37,7 @@ public interface IUserService {
 
     DataResult addLogOutLogToUser(String userNickName);
 
-    DataResult addSıgnUpLogToUser(String userNickName);
+    DataResult addSignUpLogToUser(String userNickName);
+
+    Boolean setConfirmedUser(User user);
 }

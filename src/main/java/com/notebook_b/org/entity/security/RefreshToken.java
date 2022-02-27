@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -18,15 +19,15 @@ public class RefreshToken {
   private Integer tokenId;
 
   @OneToOne
-  @JoinColumn(name = "user_id", referencedColumnName = "id")
+  @JoinColumn(name = "user_id", referencedColumnName = "id", unique = true)
   private User user;
 
   @Column(nullable = false, unique = true)
-  private String token;
+  private String refreshToken;
 
   @Column(nullable = false)
   private Instant expiryDate;
 
-
-
+  @Column(name = "CreatedDate", updatable = false)
+  private LocalDateTime createdDate;
 }

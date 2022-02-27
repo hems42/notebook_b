@@ -1,5 +1,7 @@
 package com.notebook_b.org.product.security.jwt_security;
 
+import com.notebook_b.org.core.constants.coreEnums.CoreEnumExceptionMessages;
+import com.notebook_b.org.core.exceptions.exceptionModel.NotFoundException;
 import com.notebook_b.org.core.utilities.results.DataResult;
 import com.notebook_b.org.product.dto_convertor.principal_convertor.UserDtoConvertor;
 import com.notebook_b.org.product.dto.UserDto;
@@ -32,7 +34,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws NotFoundException {
 
         DataResult result =userService.getUserByNickName(username);
 
@@ -44,7 +46,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 
             return new JwtUserDetail(user); }
 
-        throw new UsernameNotFoundException(username);
+        throw new NotFoundException(CoreEnumExceptionMessages.NOT_FOUND_USER,"not found user by token username");
     }
 
 

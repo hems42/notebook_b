@@ -1,6 +1,6 @@
 package com.notebook_b.org.product.security.jwt_security;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -16,40 +16,42 @@ import java.util.ArrayList;
 
 import static com.notebook_b.org.product.appConstants.AppConstants.*;
 
+@Slf4j
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwtTokenManager jwtTokenManager;
+    private final JwtTokenManager jwtTokenManager;
+
+    public JwtAuthenticationFilter(JwtTokenManager jwtTokenManager) {
+        this.jwtTokenManager = jwtTokenManager;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest,
                                     HttpServletResponse httpServletResponse,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        /**
-         * "Bearer 123hab2355"
-         */
         final String authHeader = httpServletRequest.getHeader(AUTH_HEADER);
 
-        String username = null;
-        String token = null;
-
+        String userNickName = null;
+        String accessToken = null;
 
         if (authHeader != null && authHeader.contains(TOKEN_START_WITH)) {
-            token = authHeader.substring(TOKEN_START_WITH.length());
+            accessToken = authHeader.substring(TOKEN_START_WITH.length());
             try {
-                username = jwtTokenManager.getUserNameFromToken(token);
+                userNickName = jwtTokenManager.getUserNameFromToken(accessToken);
             } catch (Exception e) {
             }
         }
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            if (jwtTokenManager.validateToken(token)) {
+        if (userNickName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (jwtTokenManager.validateToken(accessToken)) {
                 UsernamePasswordAuthenticationToken userNamePasswordAuthenticationToken =
-                        new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>());
+                        new UsernamePasswordAuthenticationToken(userNickName, null, new ArrayList<>());
                 userNamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
                 SecurityContextHolder.getContext().setAuthentication(userNamePasswordAuthenticationToken);
+
+                log.info("token authenticated");
             }
         }
 

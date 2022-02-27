@@ -61,7 +61,7 @@ public class RoleService implements IRoleService {
             return new SuccessDataResult(roleDtoConvertor.convert(foundRole),
                     CoreEnumResponseMessages.ROLE_SUCCESSFULLY_ADDED.toString()                 );
         } else {
-            throw new AlReadyExistException(ROLE_ALREADY_EXIST,"role daha önce oluşturulmuş!!!");
+            throw new AlReadyExistException(ALREADY_EXIST_ROLE,"role daha önce oluşturulmuş!!!");
         } }
 
     @Override

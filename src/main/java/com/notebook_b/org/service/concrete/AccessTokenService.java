@@ -1,11 +1,13 @@
 package com.notebook_b.org.service.concrete;
 
 import com.notebook_b.org.product.security.jwt_security.JwtTokenManager;
+import com.notebook_b.org.service.abstracts.IAccessTokenService;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 
-@Component
-public class AccessTokenService {
+@Service
+public class AccessTokenService implements IAccessTokenService {
 
    private final JwtTokenManager tokenManager;
 
@@ -13,10 +15,20 @@ public class AccessTokenService {
         this.tokenManager = tokenManager;
     }
 
-   public String createAccessTokenWithUserName(String userNickName){ return tokenManager.generateToken(userNickName); }
+    @Override
+    public String createAccessTokenWithUserName(String userNickName){ return tokenManager.generateToken(userNickName); }
 
+    @Override
     public Boolean verifyAccessToken(String accessToken)
     {
-        return true;
+        return tokenManager.validateToken(accessToken);
+    }
+
+    @Override
+    public String getUserNameFromAccessToken(String accessToken){return tokenManager.getUserNameFromToken(accessToken);}
+
+    @Override
+    public Boolean isNotExpired(String accessToken) {
+        return tokenManager.isNotExpired(accessToken);
     }
 }
