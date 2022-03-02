@@ -5,16 +5,20 @@ import com.notebook_b.org.entity.security.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 public interface RefreshTokenDao extends JpaRepository<RefreshToken, Integer> {
 
-    Optional<RefreshToken> findByRefreshToken(String refreshToken);
+    @Query("SELECT r FROM RefreshTokens r WHERE r.refreshToken = ?1")
+    RefreshToken getByRefreshToken(String refreshToken);
 
-    Optional<RefreshToken> findByUser(User user);
+    @Query("SELECT r FROM RefreshTokens r WHERE r.user = ?1")
+    RefreshToken getByUser(User user);
+
+    @Query("SELECT r FROM RefreshTokens  r where  r = ?1")
+    RefreshToken getRefreshTokenByRefreshToken(RefreshToken refreshToken);
 
     @Transactional
     @Modifying
@@ -25,4 +29,5 @@ public interface RefreshTokenDao extends JpaRepository<RefreshToken, Integer> {
     @Modifying
     @Query("DELETE FROM RefreshTokens r WHERE r.user = ?1")
     Integer deleteByUser(User user);
+
 }

@@ -4,6 +4,7 @@ import com.notebook_b.org.core.exceptions.abstracts.BaseExceptionModel;
 import com.notebook_b.org.entity.leadRole.User;
 import com.notebook_b.org.entity.security.ConfirmationToken;
 import com.notebook_b.org.entity.security.RefreshToken;
+import com.notebook_b.org.entity.security.Role;
 import com.notebook_b.org.repository.RoleDao;
 import com.notebook_b.org.repository.UserDao;
 import com.notebook_b.org.service.concrete.ConfirmationTokenService;
@@ -20,6 +21,9 @@ import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+import java.time.LocalDateTime;
+import java.util.HashSet;
 
 @SpringBootApplication
 @EnableSwagger2
@@ -123,8 +127,8 @@ public class NotebookBApplication implements CommandLineRunner {
         Boolean deleteResult =  confirmationTokenService.deleteConfirmationToken(user);
 */
 
-
-    /*    Role role_1 = new Role(1,"ADMIN","all_permission has one",LocalDateTime.now(),null);
+/*
+        Role role_1 = new Role(1,"ADMIN","all_permission has one", LocalDateTime.now(),null);
         Role role_2 = new Role(2,"USER","user_permission has one",LocalDateTime.now(),null);
         Role role_3 = new Role(3,"STUDENT","student_permission has one",LocalDateTime.now(),null);
 

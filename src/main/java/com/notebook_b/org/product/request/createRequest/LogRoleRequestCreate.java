@@ -1,27 +1,27 @@
 package com.notebook_b.org.product.request.createRequest;
 
 import com.notebook_b.org.entity.security.Role;
-import com.notebook_b.org.product.appEnums.AppEnumCrud;
+import com.notebook_b.org.product.appEnums.AppEnumOperationTypes;
 
 public class LogRoleRequestCreate {
 
-    private AppEnumCrud crud;
+    private AppEnumOperationTypes crud;
 
     private Role role;
 
     public LogRoleRequestCreate() {
     }
 
-    public LogRoleRequestCreate(AppEnumCrud crud, Role role) {
+    public LogRoleRequestCreate(AppEnumOperationTypes crud, Role role) {
         this.crud = crud;
         this.role = role;
     }
 
-    public AppEnumCrud getCrud() {
+    public AppEnumOperationTypes getCrud() {
         return crud;
     }
 
-    public void setCrud(AppEnumCrud crud) {
+    public void setCrud(AppEnumOperationTypes crud) {
         this.crud = crud;
     }
 

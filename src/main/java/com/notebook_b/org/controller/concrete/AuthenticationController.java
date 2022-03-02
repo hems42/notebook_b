@@ -47,19 +47,7 @@ public class AuthenticationController implements IAuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
-
-        /*try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getUserNickname(),
-                            loginRequest.getPassword()));
-            UserDto userDto = (UserDto) userService.addLogInLogToUser(loginRequest.getUserNickname()).getData();
-
-            String accessToken = tokenManager.generateToken(loginRequest.getUserNickname());
-            return ResponseEntity.ok(new LoginResponse(userDto, accessToken, null));
-        } catch (Exception e) {
-            throw e;
-        }*/
-        return ResponseEntity.ok(new LoginResponse());
+        return ResponseEntity.ok(authenticationService.logIn(loginRequest));
     }
 
 

@@ -17,6 +17,8 @@ public interface IRefreshTokenService {
 
     Boolean verifyRefreshToken(RefreshToken refreshToken);
 
+    Boolean verifyRefreshToken(User user);
+
     Boolean deleteRefreshToken(RefreshToken refreshToken);
 
     Boolean deleteRefreshToken(User user);

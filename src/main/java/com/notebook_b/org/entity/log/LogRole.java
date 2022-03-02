@@ -1,8 +1,8 @@
 package com.notebook_b.org.entity.log;
 
-import com.notebook_b.org.product.appEnums.AppEnumCrud;
 import com.notebook_b.org.entity.security.Role;
 import com.notebook_b.org.entity.leadRole.User;
+import com.notebook_b.org.product.appEnums.AppEnumOperationTypes;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,7 +22,7 @@ public class LogRole {
     private Integer id;
 
     @Enumerated(EnumType.STRING)
-    private AppEnumCrud crud;
+    private AppEnumOperationTypes crud;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "RoleId",nullable = false)

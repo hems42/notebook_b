@@ -4,37 +4,35 @@ import com.notebook_b.org.product.dto.UserDto;
 
 public class SignUpResponse {
 
-    private AccessTokenResponse accessTokenResponse;
+    private String accessToken;
 
-    private RefreshTokenResponse refreshTokenResponse;
+    private String refreshToken;
 
     private UserDto user;
 
     public SignUpResponse() {
     }
 
-    public SignUpResponse(AccessTokenResponse accessTokenResponse,
-                          RefreshTokenResponse refreshTokenResponse,
-                          UserDto user) {
-        this.accessTokenResponse = accessTokenResponse;
-        this.refreshTokenResponse = refreshTokenResponse;
+    public SignUpResponse(String accessToken, String refreshToken, UserDto user) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
         this.user = user;
     }
 
-    public AccessTokenResponse getAccessTokenResponse() {
-        return accessTokenResponse;
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    public void setAccessTokenResponse(AccessTokenResponse accessTokenResponse) {
-        this.accessTokenResponse = accessTokenResponse;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
-    public RefreshTokenResponse getRefreshTokenResponse() {
-        return refreshTokenResponse;
+    public String getRefreshToken() {
+        return refreshToken;
     }
 
-    public void setRefreshTokenResponse(RefreshTokenResponse refreshTokenResponse) {
-        this.refreshTokenResponse = refreshTokenResponse;
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
     public UserDto getUser() {

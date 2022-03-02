@@ -2,7 +2,7 @@ package com.notebook_b.org.product.dto;
 
 import com.notebook_b.org.entity.security.Role;
 import com.notebook_b.org.entity.leadRole.User;
-import com.notebook_b.org.product.appEnums.AppEnumCrud;
+import com.notebook_b.org.product.appEnums.AppEnumOperationTypes;
 
 import java.time.LocalDateTime;
 
@@ -10,7 +10,7 @@ public class LogRoleDto {
 
     private Integer id;
 
-    private AppEnumCrud crud;
+    private AppEnumOperationTypes crud;
 
     private Role role;
 
@@ -22,7 +22,7 @@ public class LogRoleDto {
     }
 
     public LogRoleDto(Integer id,
-                      AppEnumCrud crud,
+                      AppEnumOperationTypes crud,
                       Role role,
                       User user,
                       LocalDateTime createdDate) {
@@ -41,11 +41,11 @@ public class LogRoleDto {
         this.id = id;
     }
 
-    public AppEnumCrud getCrud() {
+    public AppEnumOperationTypes getCrud() {
         return crud;
     }
 
-    public void setCrud(AppEnumCrud crud) {
+    public void setCrud(AppEnumOperationTypes crud) {
         this.crud = crud;
     }
 

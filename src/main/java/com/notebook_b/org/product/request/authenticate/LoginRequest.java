@@ -1,15 +1,19 @@
 package com.notebook_b.org.product.request.authenticate;
+
 public class LoginRequest {
 
     private String userNickname;
+
+    private String email;
 
     private String password;
 
     public LoginRequest() {
     }
 
-    public LoginRequest(String userNickname, String password) {
+    public LoginRequest(String userNickname, String email, String password) {
         this.userNickname = userNickname;
+        this.email = email;
         this.password = password;
     }
 
@@ -19,6 +23,14 @@ public class LoginRequest {
 
     public void setUserNickname(String userNickname) {
         this.userNickname = userNickname;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {

@@ -1,5 +1,7 @@
 package com.notebook_b.org.service.concrete;
 
+import com.notebook_b.org.core.exceptions.abstracts.BaseExceptionModel;
+import com.notebook_b.org.core.exceptions.exceptionModel.UnAcceptableException;
 import com.notebook_b.org.entity.leadRole.User;
 import com.notebook_b.org.entity.security.RefreshToken;
 import com.notebook_b.org.product.dto.UserDto;
@@ -11,10 +13,15 @@ import com.notebook_b.org.product.request.authenticate.SignUpRequest;
 import com.notebook_b.org.product.request.createRequest.UserRequestCreate;
 import com.notebook_b.org.product.response.AccessTokenResponse;
 import com.notebook_b.org.product.response.LoginResponse;
-import com.notebook_b.org.product.response.RefreshTokenResponse;
 import com.notebook_b.org.product.response.SignUpResponse;
 import com.notebook_b.org.service.abstracts.*;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+
+import static com.notebook_b.org.core.constants.coreConstants.CoreExceptionErrorCodeConstants.*;
+import static com.notebook_b.org.core.constants.coreEnums.CoreEnumExceptionMessages.UN_ACCEPTABLE_LOGIN_REQUEST;
+import static com.notebook_b.org.core.constants.coreEnums.CoreEnumExceptionMessages.UN_SUCCESSFUL_CREATED_REFRESH_TOKEN;
 
 @Service
 public class AuthenticationService implements IAuthenticationService {
@@ -44,7 +51,7 @@ public class AuthenticationService implements IAuthenticationService {
     @Override
     public SignUpResponse signUp(SignUpRequest signupRequest) {
 
-        UserDto createdUserDto =userService.addUser(
+        UserDto createdUserDto = userService.addUser(
                 new UserRequestCreate(signupRequest.getUserNickName(),
                         signupRequest.geteMail(), signupRequest.getPassword())).getData();
         User createdUser = userDtoConvertor.convert(createdUserDto);
@@ -60,19 +67,16 @@ public class AuthenticationService implements IAuthenticationService {
 
         new Thread(() -> registrationService
                 .register(new RegistrationRequest(signupRequest.getUserNickName(),
-                signupRequest.geteMail(),
-                signupRequest.getPassword()),
-                createdUser))
+                                signupRequest.geteMail(),
+                                signupRequest.getPassword()),
+                        createdUser))
                 .start();
 
 
-
         return new SignUpResponse(
-                accessTokenResponse,
-                new RefreshTokenResponse(
-                        refreshToken.getRefreshToken(),
-                        accessTokenResponse.getAccessToken()),
-                createdUserDto );
+                accessTokenResponse.getAccessToken(),
+                refreshToken.getRefreshToken(),
+                createdUserDto);
     }
 
     @Override
@@ -82,7 +86,45 @@ public class AuthenticationService implements IAuthenticationService {
 
     @Override
     public LoginResponse logIn(LoginRequest loginRequest) {
-        return null;
+        UserDto userFound = null;
+        String _accessToken = null;
+        String _refreshToken = null;
+        HashMap<String, String> allErrors = new HashMap<>();
+
+
+
+            if (loginRequest.getUserNickname() != null && loginRequest.getPassword() != null) {
+                userFound = userService.getUserByNickName(loginRequest.getUserNickname()).getData();
+            } else if (loginRequest.getEmail() != null && loginRequest.getPassword() != null) {
+                userFound = userService.getUserByEmail(loginRequest.getEmail()).getData();
+            } else {
+                throw new UnAcceptableException(UN_ACCEPTABLE_LOGIN_REQUEST, "need email or username and password need to login");
+            }
+
+
+            if (userFound != null) {
+
+                if(refreshTokenService.verifyRefreshToken(userDtoConvertor.convert(userFound)))
+                {
+
+                }
+
+                _accessToken = accessTokenService.
+                        createAccessTokenWithUserName(userFound.getNickName()).getAccessToken();
+
+                accessTokenService.authenticateUser(userFound.getNickName(),
+                        loginRequest.getPassword());
+
+                _refreshToken = refreshTokenService.saveRefreshToken(
+                        refreshTokenService.createRefreshToken(userDtoConvertor
+                                .convert(userFound)))
+                        .get().getRefreshToken();
+
+                userService.addLogInLogToUser(null, userDtoConvertor.convert(userFound));
+
+            }
+
+        return new LoginResponse(userFound, _accessToken, _refreshToken);
     }
 
     @Override

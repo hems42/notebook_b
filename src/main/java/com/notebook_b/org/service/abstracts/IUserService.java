@@ -9,6 +9,7 @@ import com.notebook_b.org.product.request.createRequest.AddressRequestCreate;
 import com.notebook_b.org.product.request.createRequest.NoteRequestCreate;
 import com.notebook_b.org.product.request.createRequest.UserRequestCreate;
 import com.notebook_b.org.product.request.updateRequest.UserRequestUpdate;
+import org.springframework.lang.Nullable;
 
 import java.util.List;
 
@@ -33,13 +34,13 @@ public interface IUserService {
     DataResult<AddressDto> addAddressToUser(AddressRequestCreate requestCreate);
 
     //LOG
-    DataResult addLogInLogToUser(String userNickName);
+    DataResult addLogInLogToUser(@Nullable String userNickName, @Nullable User user);
 
-    DataResult addLogOutLogToUser(String userNickName);
+    DataResult addLogOutLogToUser(@Nullable String userNickName, @Nullable User user);
 
-    DataResult addSignUpLogToUser(String userNickName);
+    DataResult addSignUpLogToUser(@Nullable String userNickName, @Nullable User user);
 
-    DataResult addRegisteredLogToUser(String userNickName);
+    DataResult addRegisteredLogToUser(@Nullable String userNickName, @Nullable User user);
 
 
 

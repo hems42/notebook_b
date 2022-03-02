@@ -1,7 +1,7 @@
 package com.notebook_b.org.product.dto;
 
 import com.notebook_b.org.entity.leadRole.User;
-import com.notebook_b.org.product.appEnums.AppEnumUserOperations;
+import com.notebook_b.org.product.appEnums.AppEnumOperationTypes;
 
 import java.time.LocalDateTime;
 
@@ -9,7 +9,7 @@ public class LogUserDto {
 
     private Integer id;
 
-    private AppEnumUserOperations userOperationType;
+    private AppEnumOperationTypes userOperationType;
 
     private User user;
 
@@ -20,7 +20,7 @@ public class LogUserDto {
 
     public LogUserDto(
             Integer id,
-            AppEnumUserOperations userOperationType,
+            AppEnumOperationTypes userOperationType,
             User user,
             LocalDateTime createdDate) {
         this.id = id;
@@ -37,11 +37,11 @@ public class LogUserDto {
         this.id = id;
     }
 
-    public AppEnumUserOperations getUserOperationType() {
+    public AppEnumOperationTypes getUserOperationType() {
         return userOperationType;
     }
 
-    public void setUserOperationType(AppEnumUserOperations userOperationType) {
+    public void setUserOperationType(AppEnumOperationTypes userOperationType) {
         this.userOperationType = userOperationType;
     }
 
