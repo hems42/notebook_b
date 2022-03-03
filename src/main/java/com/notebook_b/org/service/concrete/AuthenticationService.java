@@ -1,6 +1,8 @@
 package com.notebook_b.org.service.concrete;
 
 import com.notebook_b.org.core.exceptions.abstracts.BaseExceptionModel;
+import com.notebook_b.org.core.exceptions.exceptionModel.AlReadyExistException;
+import com.notebook_b.org.core.exceptions.exceptionModel.NotFoundException;
 import com.notebook_b.org.core.exceptions.exceptionModel.UnAcceptableException;
 import com.notebook_b.org.entity.leadRole.User;
 import com.notebook_b.org.entity.security.RefreshToken;
@@ -15,14 +17,12 @@ import com.notebook_b.org.product.response.AccessTokenResponse;
 import com.notebook_b.org.product.response.LoginResponse;
 import com.notebook_b.org.product.response.SignUpResponse;
 import com.notebook_b.org.service.abstracts.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
+import static com.notebook_b.org.core.constants.coreEnums.CoreEnumExceptionMessages.*;
 
-import static com.notebook_b.org.core.constants.coreConstants.CoreExceptionErrorCodeConstants.*;
-import static com.notebook_b.org.core.constants.coreEnums.CoreEnumExceptionMessages.UN_ACCEPTABLE_LOGIN_REQUEST;
-import static com.notebook_b.org.core.constants.coreEnums.CoreEnumExceptionMessages.UN_SUCCESSFUL_CREATED_REFRESH_TOKEN;
-
+@Slf4j
 @Service
 public class AuthenticationService implements IAuthenticationService {
 
@@ -86,45 +86,87 @@ public class AuthenticationService implements IAuthenticationService {
 
     @Override
     public LoginResponse logIn(LoginRequest loginRequest) {
-        UserDto userFound = null;
+
+        UserDto userDtoFound = null;
+        User userFound = null;
         String _accessToken = null;
         String _refreshToken = null;
-        HashMap<String, String> allErrors = new HashMap<>();
 
+        System.out.println(loginRequest.toString()+" ***********");
 
-
-            if (loginRequest.getUserNickname() != null && loginRequest.getPassword() != null) {
-                userFound = userService.getUserByNickName(loginRequest.getUserNickname()).getData();
-            } else if (loginRequest.getEmail() != null && loginRequest.getPassword() != null) {
-                userFound = userService.getUserByEmail(loginRequest.getEmail()).getData();
-            } else {
-                throw new UnAcceptableException(UN_ACCEPTABLE_LOGIN_REQUEST, "need email or username and password need to login");
-            }
-
-
-            if (userFound != null) {
-
-                if(refreshTokenService.verifyRefreshToken(userDtoConvertor.convert(userFound)))
+                if(loginRequest.getPassword()!=null)
                 {
+                    if (loginRequest.getUserNickname() != null && loginRequest.getEmail() != null)
 
+                    {
+
+                        throw new UnAcceptableException(UN_ACCEPTABLE_LOGIN_REQUEST,
+                                "just one from username or email options");
+
+                    }
+
+                    else if (loginRequest.getUserNickname() != null && loginRequest.getEmail() == null)
+
+                    {
+
+                        userDtoFound = userService
+                            .getUserByNickName(loginRequest.getUserNickname())
+                            .getData();
+
+                        userFound = userDtoConvertor
+                                .convert(userDtoFound);
+
+                    }
+
+                    else if(loginRequest.getUserNickname() == null && loginRequest.getEmail() != null)
+                    {
+                        userDtoFound = userService
+                                .getUserByEmail(loginRequest.getEmail())
+                                .getData();
+
+                        userFound = userDtoConvertor
+                                .convert(userDtoFound);
+                    }
+                    else if(loginRequest.getUserNickname() == null && loginRequest.getEmail() == null)
+                    {
+                        throw new UnAcceptableException(UN_ACCEPTABLE_LOGIN_REQUEST,
+                                "need email or username to login");
+                    }
+                }
+                else
+                {
+                    throw new UnAcceptableException(UN_ACCEPTABLE_LOGIN_REQUEST,
+                            "need password to login");
                 }
 
-                _accessToken = accessTokenService.
-                        createAccessTokenWithUserName(userFound.getNickName()).getAccessToken();
 
-                accessTokenService.authenticateUser(userFound.getNickName(),
-                        loginRequest.getPassword());
+        if (userDtoFound != null && refreshTokenService.getRefreshTokenByUser(userFound) == null) {
 
-                _refreshToken = refreshTokenService.saveRefreshToken(
-                        refreshTokenService.createRefreshToken(userDtoConvertor
-                                .convert(userFound)))
+            if (refreshTokenService.verifyRefreshToken(userDtoConvertor.convert(userDtoFound))) {
+                _accessToken = accessTokenService
+                        .createAccessTokenWithUserName(userDtoFound.getNickName())
+                        .getAccessToken();
+
+                accessTokenService
+                        .authenticateUser(
+                                userDtoFound.getNickName(),
+                                loginRequest.getPassword()
+                        );
+
+                _refreshToken = refreshTokenService
+                        .saveRefreshToken(refreshTokenService
+                                .createRefreshToken(userFound))
                         .get().getRefreshToken();
 
-                userService.addLogInLogToUser(null, userDtoConvertor.convert(userFound));
+                userService.addLogInLogToUser(null, userFound);
 
+                return new LoginResponse(userDtoFound, _accessToken, _refreshToken);
+            } else {
+                throw new AlReadyExistException(ALREADY_EXIST_REFRESH_TOKEN, "user already login");
             }
-
-        return new LoginResponse(userFound, _accessToken, _refreshToken);
+        } else {
+            throw new NotFoundException(NOT_FOUND_USER, "user not found for login");
+        }
     }
 
     @Override

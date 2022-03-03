@@ -1,5 +1,8 @@
 package com.notebook_b.org.product.request.authenticate;
 
+import lombok.ToString;
+
+@ToString
 public class LoginRequest {
 
     private String userNickname;

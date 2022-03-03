@@ -276,6 +276,7 @@ public class UserService implements IUserService {
     }
 
     private User util_getUserByNickNameOrEmail(@Nullable String userNickName, @Nullable String email) {
+
         User userFound;
 
         if (userNickName != null) {
