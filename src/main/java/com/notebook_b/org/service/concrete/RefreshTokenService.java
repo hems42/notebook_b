@@ -36,8 +36,7 @@ public class RefreshTokenService implements IRefreshTokenService {
     @Override
     public RefreshToken createRefreshToken(User user) {
 
-        try
-        {
+        try {
             if (util_isNotExistRefreshToken(user)) {
                 return new RefreshToken(
                         null,
@@ -52,16 +51,11 @@ public class RefreshTokenService implements IRefreshTokenService {
 
                 //  throw new UnSuccessfulException(UN_SUCCESSFUL_CREATED_REFRESH_TOKEN, "not created refresh token");
             }
-        }
-        catch (BaseExceptionModel model)
-        {
+        } catch (BaseExceptionModel model) {
 
-            if(model.getErrorCode().matches(ALREADY_EXIST_EXCEPTION_ERROR_CODE))
-            {
-                log.error("refresh token already exist!!  ::"+model.getErrorMessage());
-            }
-            else
-            {
+            if (model.getErrorCode().matches(ALREADY_EXIST_EXCEPTION_ERROR_CODE)) {
+                log.error("refresh token already exist!!  ::" + model.getErrorMessage());
+            } else {
                 log.error("not defined error!!");
             }
 
@@ -87,14 +81,12 @@ public class RefreshTokenService implements IRefreshTokenService {
 
     @Override
     public Optional<RefreshToken> getRefreshTokenByUser(User user) {
+
         RefreshToken refreshToken = util_getRefreshToken(user);
 
-        if(refreshToken!=null)
-        {
+        if (refreshToken != null) {
             return Optional.of(refreshToken);
-        }
-        else
-        {
+        } else {
             return null;
         }
 
@@ -145,7 +137,7 @@ public class RefreshTokenService implements IRefreshTokenService {
 
             log.error("not found refresh token by ıd");
             return null;
-           // throw new NotFoundException(NOT_FOUND_REFRESH_TOKEN, "not found refresh token by ıd");
+            // throw new NotFoundException(NOT_FOUND_REFRESH_TOKEN, "not found refresh token by ıd");
         }
     }
 
@@ -159,7 +151,7 @@ public class RefreshTokenService implements IRefreshTokenService {
 
             log.error("not found refresh token by user");
             return null;
-           // throw new NotFoundException(NOT_FOUND_REFRESH_TOKEN, "not found refresh token by user");
+            // throw new NotFoundException(NOT_FOUND_REFRESH_TOKEN, "not found refresh token by user");
         }
     }
 
@@ -186,7 +178,7 @@ public class RefreshTokenService implements IRefreshTokenService {
         } else {
             log.error("not found refresh token");
             return null;
-           // throw new NotFoundException(NOT_FOUND_REFRESH_TOKEN, "not found refresh token");
+            // throw new NotFoundException(NOT_FOUND_REFRESH_TOKEN, "not found refresh token");
         }
     }
 
@@ -200,7 +192,7 @@ public class RefreshTokenService implements IRefreshTokenService {
 
             log.warn("refresh token found by id");
             return false;
-           // throw new AlReadyExistException(ALREADY_EXIST_REFRESH_TOKEN, "refresh token found by id");
+            // throw new AlReadyExistException(ALREADY_EXIST_REFRESH_TOKEN, "refresh token found by id");
         }
     }
 
@@ -216,7 +208,7 @@ public class RefreshTokenService implements IRefreshTokenService {
             log.warn("refresh token found by refresh user");
             return false;
 
-           // throw new AlReadyExistException(ALREADY_EXIST_REFRESH_TOKEN, "refresh token found by user");
+            // throw new AlReadyExistException(ALREADY_EXIST_REFRESH_TOKEN, "refresh token found by user");
         }
     }
 
@@ -245,7 +237,7 @@ public class RefreshTokenService implements IRefreshTokenService {
 
             log.warn("refresh token found");
             return false;
-          //  throw new AlReadyExistException(ALREADY_EXIST_REFRESH_TOKEN, "refresh token found");
+            //  throw new AlReadyExistException(ALREADY_EXIST_REFRESH_TOKEN, "refresh token found");
         }
     }
 
@@ -256,7 +248,7 @@ public class RefreshTokenService implements IRefreshTokenService {
 
             log.warn("refresh token expired and deleted");
             return false;
-           // throw new NotValidException(NOT_VALID_REFRESH_TOKEN_EXPIRED, "");
+            // throw new NotValidException(NOT_VALID_REFRESH_TOKEN_EXPIRED, "");
 
         } else {
             return true;

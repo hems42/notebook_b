@@ -89,8 +89,8 @@ public class AuthenticationService implements IAuthenticationService {
 
         UserDto userDtoFound = null;
         User userFound = null;
-        String _accessToken = null;
-        String _refreshToken = null;
+        String _accessToken;
+        String _refreshToken;
 
         if (loginRequest.getPassword() != null) {
             if (loginRequest.getUserNickname() != null && loginRequest.getEmail() != null) {
