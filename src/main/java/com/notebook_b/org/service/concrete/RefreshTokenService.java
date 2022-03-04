@@ -87,7 +87,17 @@ public class RefreshTokenService implements IRefreshTokenService {
 
     @Override
     public Optional<RefreshToken> getRefreshTokenByUser(User user) {
-        return Optional.of(util_getRefreshToken(user));
+        RefreshToken refreshToken = util_getRefreshToken(user);
+
+        if(refreshToken!=null)
+        {
+            return Optional.of(refreshToken);
+        }
+        else
+        {
+            return null;
+        }
+
     }
 
     @Override
@@ -132,7 +142,10 @@ public class RefreshTokenService implements IRefreshTokenService {
         if (refreshTokenFound != null) {
             return refreshTokenFound;
         } else {
-            throw new NotFoundException(NOT_FOUND_REFRESH_TOKEN, "not found refresh token by ıd");
+
+            log.error("not found refresh token by ıd");
+            return null;
+           // throw new NotFoundException(NOT_FOUND_REFRESH_TOKEN, "not found refresh token by ıd");
         }
     }
 
@@ -143,7 +156,10 @@ public class RefreshTokenService implements IRefreshTokenService {
         if (refreshTokenFound != null) {
             return refreshTokenFound;
         } else {
-            throw new NotFoundException(NOT_FOUND_REFRESH_TOKEN, "not found refresh token by user");
+
+            log.error("not found refresh token by user");
+            return null;
+           // throw new NotFoundException(NOT_FOUND_REFRESH_TOKEN, "not found refresh token by user");
         }
     }
 
@@ -154,7 +170,10 @@ public class RefreshTokenService implements IRefreshTokenService {
         if (refreshTokenFound != null) {
             return refreshTokenFound;
         } else {
-            throw new NotFoundException(NOT_FOUND_REFRESH_TOKEN, "not found refresh token by refresh token");
+
+            log.error("not found refresh token by refresh token");
+            return null;
+            //throw new NotFoundException(NOT_FOUND_REFRESH_TOKEN, "not found refresh token by refresh token");
         }
     }
 
@@ -165,7 +184,9 @@ public class RefreshTokenService implements IRefreshTokenService {
         if (refreshTokenFound != null) {
             return refreshTokenFound;
         } else {
-            throw new NotFoundException(NOT_FOUND_REFRESH_TOKEN, "not found refresh token");
+            log.error("not found refresh token");
+            return null;
+           // throw new NotFoundException(NOT_FOUND_REFRESH_TOKEN, "not found refresh token");
         }
     }
 
@@ -176,7 +197,10 @@ public class RefreshTokenService implements IRefreshTokenService {
         if (refreshTokenFound == null) {
             return true;
         } else {
-            throw new AlReadyExistException(ALREADY_EXIST_REFRESH_TOKEN, "refresh token found by id");
+
+            log.warn("refresh token found by id");
+            return false;
+           // throw new AlReadyExistException(ALREADY_EXIST_REFRESH_TOKEN, "refresh token found by id");
         }
     }
 
@@ -188,7 +212,11 @@ public class RefreshTokenService implements IRefreshTokenService {
         if (refreshTokenFound == null) {
             return true;
         } else {
-            throw new AlReadyExistException(ALREADY_EXIST_REFRESH_TOKEN, "refresh token found by user");
+
+            log.warn("refresh token found by refresh user");
+            return false;
+
+           // throw new AlReadyExistException(ALREADY_EXIST_REFRESH_TOKEN, "refresh token found by user");
         }
     }
 
@@ -199,8 +227,11 @@ public class RefreshTokenService implements IRefreshTokenService {
         if (refreshTokenFound == null) {
             return true;
         } else {
-            throw new AlReadyExistException(ALREADY_EXIST_REFRESH_TOKEN,
-                    "refresh token found by refresh token");
+
+            log.warn("refresh token found by refresh token");
+            return false;
+//            throw new AlReadyExistException(ALREADY_EXIST_REFRESH_TOKEN,
+//                    "refresh token found by refresh token");
         }
     }
 
@@ -211,8 +242,10 @@ public class RefreshTokenService implements IRefreshTokenService {
         if (refreshTokenFound == null) {
             return true;
         } else {
-            throw new AlReadyExistException(ALREADY_EXIST_REFRESH_TOKEN,
-                    "refresh token found");
+
+            log.warn("refresh token found");
+            return false;
+          //  throw new AlReadyExistException(ALREADY_EXIST_REFRESH_TOKEN, "refresh token found");
         }
     }
 
@@ -221,7 +254,9 @@ public class RefreshTokenService implements IRefreshTokenService {
 
             refreshTokenRepository.delete(refreshToken);
 
-            throw new NotValidException(NOT_VALID_REFRESH_TOKEN_EXPIRED, "");
+            log.warn("refresh token expired and deleted");
+            return false;
+           // throw new NotValidException(NOT_VALID_REFRESH_TOKEN_EXPIRED, "");
 
         } else {
             return true;

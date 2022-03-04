@@ -92,57 +92,45 @@ public class AuthenticationService implements IAuthenticationService {
         String _accessToken = null;
         String _refreshToken = null;
 
-        System.out.println(loginRequest.toString()+" ***********");
+        if (loginRequest.getPassword() != null) {
+            if (loginRequest.getUserNickname() != null && loginRequest.getEmail() != null) {
 
-                if(loginRequest.getPassword()!=null)
-                {
-                    if (loginRequest.getUserNickname() != null && loginRequest.getEmail() != null)
+                log.error("just one of username or email options");
+                throw new UnAcceptableException(UN_ACCEPTABLE_LOGIN_REQUEST,
+                        "just one from username or email options");
 
-                    {
+            } else if (loginRequest.getUserNickname() != null && loginRequest.getEmail() == null) {
 
-                        throw new UnAcceptableException(UN_ACCEPTABLE_LOGIN_REQUEST,
-                                "just one from username or email options");
+                userDtoFound = userService
+                        .getUserByNickName(loginRequest.getUserNickname())
+                        .getData();
 
-                    }
+                userFound = userDtoConvertor
+                        .convert(userDtoFound);
 
-                    else if (loginRequest.getUserNickname() != null && loginRequest.getEmail() == null)
+            } else if (loginRequest.getUserNickname() == null && loginRequest.getEmail() != null) {
+                userDtoFound = userService
+                        .getUserByEmail(loginRequest.getEmail())
+                        .getData();
 
-                    {
+                userFound = userDtoConvertor
+                        .convert(userDtoFound);
+            } else if (loginRequest.getUserNickname() == null && loginRequest.getEmail() == null) {
 
-                        userDtoFound = userService
-                            .getUserByNickName(loginRequest.getUserNickname())
-                            .getData();
-
-                        userFound = userDtoConvertor
-                                .convert(userDtoFound);
-
-                    }
-
-                    else if(loginRequest.getUserNickname() == null && loginRequest.getEmail() != null)
-                    {
-                        userDtoFound = userService
-                                .getUserByEmail(loginRequest.getEmail())
-                                .getData();
-
-                        userFound = userDtoConvertor
-                                .convert(userDtoFound);
-                    }
-                    else if(loginRequest.getUserNickname() == null && loginRequest.getEmail() == null)
-                    {
-                        throw new UnAcceptableException(UN_ACCEPTABLE_LOGIN_REQUEST,
-                                "need email or username to login");
-                    }
-                }
-                else
-                {
-                    throw new UnAcceptableException(UN_ACCEPTABLE_LOGIN_REQUEST,
-                            "need password to login");
-                }
+                log.error("need email or username to login");
+                throw new UnAcceptableException(UN_ACCEPTABLE_LOGIN_REQUEST,
+                        "need email or username to login");
+            }
+        } else {
+            log.error("need password to login");
+            throw new UnAcceptableException(UN_ACCEPTABLE_LOGIN_REQUEST,
+                    "need password to login");
+        }
 
 
-        if (userDtoFound != null && refreshTokenService.getRefreshTokenByUser(userFound) == null) {
+        if (userDtoFound != null) {
+            if (refreshTokenService.getRefreshTokenByUser(userFound) == null) {
 
-            if (refreshTokenService.verifyRefreshToken(userDtoConvertor.convert(userDtoFound))) {
                 _accessToken = accessTokenService
                         .createAccessTokenWithUserName(userDtoFound.getNickName())
                         .getAccessToken();
@@ -161,10 +149,15 @@ public class AuthenticationService implements IAuthenticationService {
                 userService.addLogInLogToUser(null, userFound);
 
                 return new LoginResponse(userDtoFound, _accessToken, _refreshToken);
+
             } else {
+                log.error("user already login");
                 throw new AlReadyExistException(ALREADY_EXIST_REFRESH_TOKEN, "user already login");
             }
+
+
         } else {
+            log.error("user not found for login");
             throw new NotFoundException(NOT_FOUND_USER, "user not found for login");
         }
     }
