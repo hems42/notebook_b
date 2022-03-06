@@ -4,8 +4,12 @@ import com.notebook_b.org.core.constants.coreEnums.CoreEnumExceptionMessages;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.time.LocalDateTime;
+
 @ResponseStatus
 public abstract class BaseExceptionModel extends RuntimeException {
+
+    private LocalDateTime timeStamp;
     private Integer errorCode;
     private String errorMessage;
     private String errorDescription;
@@ -23,9 +27,13 @@ public abstract class BaseExceptionModel extends RuntimeException {
         errorMessage = coreEnumExceptionMessages.getExceptionMessage();
         this.errorDescription = errorDescription;
         this.baseErrorCode = baseErrorCode;
-        this.baseStatusCode=baseStatusCode;
+        this.baseStatusCode = baseStatusCode;
 
 
+    }
+
+    public LocalDateTime getTimeStamp() {
+        return LocalDateTime.now();
     }
 
     public String getErrorCode() {

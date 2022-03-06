@@ -63,6 +63,8 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
         headers.add("errorFlag", "true");
 
         Map<String, String> body = new HashMap<>();
+
+        body.put("timestamp",exceptionModel.getTimeStamp().toString());
         body.put("errorCode", exceptionModel.getErrorCode());
         body.put("errorMessage", exceptionModel.getErrorMessage());
         body.put("errorDescription", exceptionModel.getErrorDescription());

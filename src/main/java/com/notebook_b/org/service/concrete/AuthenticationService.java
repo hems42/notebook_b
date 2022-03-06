@@ -1,6 +1,5 @@
 package com.notebook_b.org.service.concrete;
 
-import com.notebook_b.org.core.exceptions.abstracts.BaseExceptionModel;
 import com.notebook_b.org.core.exceptions.exceptionModel.AlReadyExistException;
 import com.notebook_b.org.core.exceptions.exceptionModel.NotFoundException;
 import com.notebook_b.org.core.exceptions.exceptionModel.UnAcceptableException;

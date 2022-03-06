@@ -6,6 +6,10 @@ public class LoginResponse {
 
     private UserDto user;
 
+    private String userNickName;
+
+
+
     private String accessToken;
 
     private String refreshToken;
