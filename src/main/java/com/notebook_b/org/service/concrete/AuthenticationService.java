@@ -1,5 +1,7 @@
 package com.notebook_b.org.service.concrete;
 
+import com.notebook_b.org.core.constants.coreConstants.CoreExceptionErrorCodeConstants;
+import com.notebook_b.org.core.constants.coreEnums.CoreEnumExceptionMessages;
 import com.notebook_b.org.core.exceptions.abstracts.BaseExceptionModel;
 import com.notebook_b.org.core.exceptions.exceptionModel.*;
 import com.notebook_b.org.entity.leadRole.User;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.notebook_b.org.core.constants.coreConstants.CoreExceptionErrorCodeConstants.*;
 import static com.notebook_b.org.core.constants.coreEnums.CoreEnumExceptionMessages.*;
 
 @Slf4j
@@ -94,7 +97,7 @@ public class AuthenticationService implements IAuthenticationService {
         try {
             confirmationTokenFound = confirmationTokenService.getConfirmationToken(confirmationToken).get();
         } catch (BaseExceptionModel exceptionModel) {
-            if (exceptionModel.getClass() == NotFoundException.class) {
+            if (exceptionModel.getErrorCode().startsWith(NOT_FOUND_EXCEPTION_ERROR_CODE)) {
                 log.error(logTitle + "confirmation token not found by token");
                 allErrorMessages.put(exceptionModel.getErrorCode(), "confirmation token not found");
             }
@@ -103,11 +106,11 @@ public class AuthenticationService implements IAuthenticationService {
         try {
             userFound = confirmationTokenFound.getUser();
             if (userFound == null) {
-                log.error(logTitle + "user not found by confirmaiton token");
-                throw new NotFoundException(NOT_FOUND_USER, "user not found by confirmaiton token");
+                log.error(logTitle + "user not found by confirmation token");
+                throw new NotFoundException(NOT_FOUND_USER, "user not found by confirmation token");
             }
         } catch (BaseExceptionModel exceptionModel) {
-            if (exceptionModel.getClass() == NotFoundException.class) {
+            if (exceptionModel.getErrorCode().startsWith(NOT_FOUND_EXCEPTION_ERROR_CODE)) {
                 log.error(logTitle + "user not found by token");
                 allErrorMessages.put(exceptionModel.getErrorCode(), "user not found by token");
             }
@@ -116,45 +119,41 @@ public class AuthenticationService implements IAuthenticationService {
         try {
             confirmationTokenService.verifyConfirmationToken(confirmationTokenFound.getConfirmationToken());
         } catch (BaseExceptionModel exceptionModel) {
-            if (exceptionModel.getClass() == AlReadyExistException.class) {
+            if (exceptionModel.getErrorCode().startsWith(ALREADY_ACCEPTED_EXCEPTION_ERROR_CODE)) {
                 log.error(logTitle + "user already confirmed");
                 allErrorMessages.put(exceptionModel.getErrorCode(), "user already confirmed");
-            } else if (exceptionModel.getClass() == NotValidException.class) {
+            } else if (exceptionModel.getErrorCode().startsWith(NOT_VALID_EXCEPTION_ERROR_CODE)) {
                 log.error(logTitle + "confirmation token nat valid, expired");
                 allErrorMessages.put(exceptionModel.getErrorCode(), "confirmation token nat valid, expired");
             }
         }
 
 
-        try {
+        if (allErrorMessages.isEmpty()) {
 
             if (confirmationTokenService.setConfirmedAt(confirmationTokenFound.getConfirmationToken())) {
+
                 userService.setConfirmedUser(userFound);
 
                 log.info(logTitle + " user confirmed");
+
                 log.info(logTitle + "added to log user registered");
+
+                return new RegistrationResponse(
+                        "user registered",
+                        userFound.getEmail(),
+                        userFound.getNickName());
             } else {
+
                 log.error(logTitle + "user not confirmed");
 
-                throw new UnSuccessfulException(UN_SUCCESSFUL_CONFIRMATION_TOKEN_CONFIRMED, "not confirmed user");
+                throw new UnSuccessfulException(UN_SUCCESSFUL_REGISTRATION, allErrorMessages.toString());
             }
 
-        } catch (BaseExceptionModel exceptionModel) {
-            if (exceptionModel.getClass() == UnSuccessfulException.class) {
-                log.error(logTitle + "unsuccessful performed confirmed user");
-                allErrorMessages.put(exceptionModel.getErrorCode(), "unsuccessful performed confirmed user");
-            }
-        }
-
-        System.out.println("gelen hatalar : "+allErrorMessages);
-
-        if (allErrorMessages.isEmpty()) {
-            return new RegistrationResponse(
-                    "user registration is succesfully",
-                    userFound.getEmail(),
-                    userFound.getNickName()
-            );
         } else {
+
+            log.error(logTitle + "user not confirmed");
+
             throw new UnSuccessfulException(UN_SUCCESSFUL_REGISTRATION, allErrorMessages.toString());
         }
     }
