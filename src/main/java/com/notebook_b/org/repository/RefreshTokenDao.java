@@ -9,36 +9,31 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface RefreshTokenDao extends JpaRepository<RefreshToken, Integer> {
 
-    @Query("" +
-            "SELECT r " +
+    @Query( "SELECT r " +
             "FROM RefreshTokens r " +
             "WHERE r.refreshToken = ?1")
     RefreshToken getByRefreshToken(String refreshToken);
 
-    @Query("" +
-            "SELECT r " +
+    @Query( "SELECT r " +
             "FROM RefreshTokens r " +
             "WHERE r.user = ?1")
     RefreshToken getRefreshTokenByUser(User user);
 
-    @Query("" +
-            "SELECT r " +
+    @Query( "SELECT r " +
             "FROM RefreshTokens  r " +
             "WHERE  r = ?1")
     RefreshToken getRefreshTokenByRefreshToken(RefreshToken refreshToken);
 
     @Transactional
     @Modifying
-    @Query("" +
-            "DELETE " +
+    @Query( "DELETE " +
             "FROM RefreshTokens r " +
             "WHERE r = ?1")
     Integer deleteByRefreshToken(RefreshToken refreshToken);
 
     @Transactional
     @Modifying
-    @Query("" +
-            "DELETE " +
+    @Query( "DELETE " +
             "FROM RefreshTokens r " +
             "WHERE r.user = ?1")
     Integer deleteByUser(User user);

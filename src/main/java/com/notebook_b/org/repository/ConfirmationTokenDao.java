@@ -12,24 +12,69 @@ import java.util.Optional;
 
 public interface ConfirmationTokenDao extends JpaRepository<ConfirmationToken, Integer> {
 
+    //SELECT
     Optional<ConfirmationToken> findByConfirmationToken(String confirmationToken);
 
     Optional<ConfirmationToken> findByUser(User user);
 
+    @Query( "SELECT c " +
+            "FROM ConfirmationTokens c " +
+            "WHERE c.tokenId = ?1")
+    ConfirmationToken getConfirmationTokenByTokenId (Integer tokenId);
+
+    @Query( "SELECT c " +
+            "FROM ConfirmationTokens c " +
+            "WHERE c.confirmationToken = ?1")
+    ConfirmationToken getConfirmationTokenByConfirmationToken (String confirmationToken);
+
+    @Query( "SELECT c " +
+            "FROM ConfirmationTokens c " +
+            "WHERE c.user = ?1")
+    ConfirmationToken getConfirmationTokenByUser (User user);
+
+    //UPDATE
     @Transactional
     @Modifying
-    @Query("UPDATE ConfirmationTokens c " +
+    @Query( "UPDATE ConfirmationTokens c " +
             "SET c.confirmedAt = ?2 " +
             "WHERE c.confirmationToken = ?1")
     Integer updateConfirmedAt(String token, LocalDateTime confirmedAt);
 
+
+    //DELETE
     @Transactional
     @Modifying
-    @Query("DELETE FROM ConfirmationTokens c WHERE c = ?1")
+    @Query( "DELETE " +
+            "FROM ConfirmationTokens c " +
+            "WHERE c = ?1")
     Integer deleteByConfirmationToken(ConfirmationToken confirmationToken);
 
     @Transactional
     @Modifying
-    @Query("DELETE FROM ConfirmationTokens c WHERE c.user = ?1")
+    @Query( "DELETE " +
+            "FROM ConfirmationTokens c " +
+            "WHERE c.tokenId = ?1")
+    Integer deleteByTokenId(Integer tokenId);
+
+    @Transactional
+    @Modifying
+    @Query( "DELETE " +
+            "FROM ConfirmationTokens c " +
+            "WHERE c.confirmationToken = ?1")
+    Integer deleteByConfirmationToken(String confirmationToken);
+
+    @Transactional
+    @Modifying
+    @Query( "DELETE " +
+            "FROM ConfirmationTokens c " +
+            "WHERE c.user = ?1")
     Integer deleteByUser(User user);
+
+
+    //EXIST
+    Boolean existsByTokenId(Integer tokenId);
+
+    Boolean existsByConfirmationToken(String confirmationToken);
+
+    Boolean existsByUser(User user);
 }

@@ -32,6 +32,8 @@ public class AuthenticationService implements IAuthenticationService {
     private final IRefreshTokenService refreshTokenService;
     private final IConfirmationTokenService confirmationTokenService;
 
+    private final String logTitle ="AuthenticationService ";
+
 
     public AuthenticationService(IUserService userService,
                                  UserDtoConvertor userDtoConvertor,
@@ -81,6 +83,16 @@ public class AuthenticationService implements IAuthenticationService {
     @Override
     public void register() {
 
+        /*
+        - kullanıcı var mı
+        -kullanıcı aktif mi
+        -kullanıcı register edilmişmi
+
+        -confirmatation token var mı
+        -conf. token geçerlimi
+
+
+         */
     }
 
     @Override
@@ -94,7 +106,7 @@ public class AuthenticationService implements IAuthenticationService {
         if (loginRequest.getPassword() != null) {
             if (loginRequest.getUserNickname() != null && loginRequest.getEmail() != null) {
 
-                log.error("just one of username or email options");
+                log.error(logTitle+"just one of username or email options");
                 throw new UnAcceptableException(UN_ACCEPTABLE_LOGIN_REQUEST,
                         "just one from username or email options");
 
@@ -116,12 +128,12 @@ public class AuthenticationService implements IAuthenticationService {
                         .convert(userDtoFound);
             } else if (loginRequest.getUserNickname() == null && loginRequest.getEmail() == null) {
 
-                log.error("need email or username to login");
+                log.error(logTitle+"need email or username to login");
                 throw new UnAcceptableException(UN_ACCEPTABLE_LOGIN_REQUEST,
                         "need email or username to login");
             }
         } else {
-            log.error("need password to login");
+            log.error(logTitle+"need password to login");
             throw new UnAcceptableException(UN_ACCEPTABLE_LOGIN_REQUEST,
                     "need password to login");
         }
@@ -147,16 +159,24 @@ public class AuthenticationService implements IAuthenticationService {
 
                 userService.addLogInLogToUser(null, userFound);
 
-                return new LoginResponse(userDtoFound, _accessToken, _refreshToken);
+                return new LoginResponse(userDtoFound.getId(),
+                        userDtoFound.getNickName(),
+                        userDtoFound.getEmail(),
+                        userDtoFound.getActive(),
+                        userDtoFound.getRegistered(),
+                        userDtoFound.getRoles(),
+                        userDtoFound.getCreatedDate(),
+                        userDtoFound.getUpdatedDate(),
+                        _accessToken, _refreshToken);
 
             } else {
-                log.error("user already login");
+                log.error(logTitle+"user already login");
                 throw new AlReadyExistException(ALREADY_EXIST_REFRESH_TOKEN, "user already login");
             }
 
 
         } else {
-            log.error("user not found for login");
+            log.error(logTitle+"user not found for login");
             throw new NotFoundException(NOT_FOUND_USER, "user not found for login");
         }
     }

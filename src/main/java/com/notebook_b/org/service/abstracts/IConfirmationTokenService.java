@@ -18,6 +18,10 @@ public interface IConfirmationTokenService {
 
     Boolean deleteConfirmationToken(ConfirmationToken confirmationToken);
 
+    Boolean deleteConfirmationToken(Integer tokenId);
+
+    Boolean deleteConfirmationToken(String  confirmationToken);
+
     Boolean deleteConfirmationToken(User user);
 
     Boolean verifyConfirmationToken(String confirmationToken);
