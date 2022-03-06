@@ -143,7 +143,8 @@ public class AuthenticationService implements IAuthenticationService {
                         "user registered",
                         userFound.getEmail(),
                         userFound.getNickName());
-            } else {
+            }
+            else {
 
                 log.error(logTitle + "user not confirmed");
 

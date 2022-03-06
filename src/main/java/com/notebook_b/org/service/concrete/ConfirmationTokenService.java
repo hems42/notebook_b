@@ -32,6 +32,7 @@ public class ConfirmationTokenService implements IConfirmationTokenService {
     @Override
     public ConfirmationToken createConfirmationToken(User user) {
 
+        log.info(logTitle+"confirmation token created");
         return new ConfirmationToken(
                 null,
                 user,
