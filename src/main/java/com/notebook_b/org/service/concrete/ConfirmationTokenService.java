@@ -31,6 +31,7 @@ public class ConfirmationTokenService implements IConfirmationTokenService {
 
     @Override
     public ConfirmationToken createConfirmationToken(User user) {
+
         return new ConfirmationToken(
                 null,
                 user,
@@ -57,11 +58,13 @@ public class ConfirmationTokenService implements IConfirmationTokenService {
 
     @Override
     public Optional<ConfirmationToken> getConfirmationToken(String token) {
+
         return Optional.of(util_getConfirmationToken(token));
     }
 
     @Override
     public Optional<ConfirmationToken> getConfirmationToken(User user) {
+
         return Optional.of(util_getConfirmationToken(user));
     }
 

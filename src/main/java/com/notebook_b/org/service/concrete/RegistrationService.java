@@ -67,7 +67,7 @@ public class RegistrationService implements IRegistrationService {
         if (confirmationTokenService.verifyConfirmationToken(confirmationToken)) {
             return confirmationTokenService.setConfirmedAt(confirmationToken);
         } else {
-            throw new UnSuccessfulException(CoreEnumExceptionMessages.UN_SUCCESSFUL_CONFIRMATION_TOKEN,
+            throw new UnSuccessfulException(CoreEnumExceptionMessages.UN_SUCCESSFUL_CONFIRMATION_TOKEN_CONFIRMED,
                     "confirmation token cant confirmed");
         }
     }

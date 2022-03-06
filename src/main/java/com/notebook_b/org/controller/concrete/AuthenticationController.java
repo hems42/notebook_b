@@ -3,19 +3,13 @@ package com.notebook_b.org.controller.concrete;
 import com.notebook_b.org.controller.abstracts.IAuthenticationController;
 import com.notebook_b.org.core.constants.coreEnums.CoreEnumExceptionMessages;
 import com.notebook_b.org.core.exceptions.exceptionModel.NotFoundException;
-import com.notebook_b.org.product.dto.UserDto;
 import com.notebook_b.org.product.request.authenticate.LoginRequest;
 import com.notebook_b.org.product.request.authenticate.SignUpRequest;
 import com.notebook_b.org.product.response.LoginResponse;
 import com.notebook_b.org.product.response.RegistrationResponse;
 import com.notebook_b.org.product.response.SignUpResponse;
-import com.notebook_b.org.product.security.jwt_security.JwtTokenManager;
 import com.notebook_b.org.service.abstracts.IAuthenticationService;
-import com.notebook_b.org.service.abstracts.IUserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -36,12 +30,7 @@ public class AuthenticationController implements IAuthenticationController {
     @GetMapping("/registration")
     public RegistrationResponse confirmUser(@RequestParam String confirmToken) {
 
-        RegistrationResponse registrationResponse = new RegistrationResponse(
-          "kullanıcı başarıyla onaylandı : token ile "+confirmToken,
-          "user@user"
-        );
-
-        return registrationResponse;
+      return  authenticationService.register(confirmToken);
 
     }
 

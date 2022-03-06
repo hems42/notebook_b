@@ -4,13 +4,14 @@ import com.notebook_b.org.product.request.authenticate.LogoutRequest;
 import com.notebook_b.org.product.request.authenticate.LoginRequest;
 import com.notebook_b.org.product.request.authenticate.SignUpRequest;
 import com.notebook_b.org.product.response.LoginResponse;
+import com.notebook_b.org.product.response.RegistrationResponse;
 import com.notebook_b.org.product.response.SignUpResponse;
 
 public interface IAuthenticationService {
 
     SignUpResponse signUp(SignUpRequest signupRequest);
 
-    void register();
+    RegistrationResponse register(String confirmationToken);
 
     LoginResponse logIn(LoginRequest loginRequest);
 

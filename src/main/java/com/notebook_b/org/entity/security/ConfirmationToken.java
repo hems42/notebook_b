@@ -4,10 +4,12 @@ import com.notebook_b.org.entity.leadRole.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@ToString
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

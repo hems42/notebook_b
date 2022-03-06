@@ -1,9 +1,9 @@
 package com.notebook_b.org.service.concrete;
 
-import com.notebook_b.org.core.exceptions.exceptionModel.AlReadyExistException;
-import com.notebook_b.org.core.exceptions.exceptionModel.NotFoundException;
-import com.notebook_b.org.core.exceptions.exceptionModel.UnAcceptableException;
+import com.notebook_b.org.core.exceptions.abstracts.BaseExceptionModel;
+import com.notebook_b.org.core.exceptions.exceptionModel.*;
 import com.notebook_b.org.entity.leadRole.User;
+import com.notebook_b.org.entity.security.ConfirmationToken;
 import com.notebook_b.org.entity.security.RefreshToken;
 import com.notebook_b.org.product.dto.UserDto;
 import com.notebook_b.org.product.dto_convertor.principal_convertor.UserDtoConvertor;
@@ -14,10 +14,14 @@ import com.notebook_b.org.product.request.authenticate.SignUpRequest;
 import com.notebook_b.org.product.request.createRequest.UserRequestCreate;
 import com.notebook_b.org.product.response.AccessTokenResponse;
 import com.notebook_b.org.product.response.LoginResponse;
+import com.notebook_b.org.product.response.RegistrationResponse;
 import com.notebook_b.org.product.response.SignUpResponse;
 import com.notebook_b.org.service.abstracts.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.notebook_b.org.core.constants.coreEnums.CoreEnumExceptionMessages.*;
 
@@ -32,7 +36,7 @@ public class AuthenticationService implements IAuthenticationService {
     private final IRefreshTokenService refreshTokenService;
     private final IConfirmationTokenService confirmationTokenService;
 
-    private final String logTitle ="AuthenticationService ";
+    private final String logTitle = "AuthenticationService ";
 
 
     public AuthenticationService(IUserService userService,
@@ -81,18 +85,78 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
     @Override
-    public void register() {
+    public RegistrationResponse register(String confirmationToken) {
 
-        /*
-        - kullanıcı var mı
-        -kullanıcı aktif mi
-        -kullanıcı register edilmişmi
+        Map<String, String> allErrorMessages = new HashMap<>();
+        User userFound = null;
+        ConfirmationToken confirmationTokenFound = null;
 
-        -confirmatation token var mı
-        -conf. token geçerlimi
+        try {
+            confirmationTokenFound = confirmationTokenService.getConfirmationToken(confirmationToken).get();
+        } catch (BaseExceptionModel exceptionModel) {
+            if (exceptionModel.getClass() == NotFoundException.class) {
+                log.error(logTitle + "confirmation token not found by token");
+                allErrorMessages.put(exceptionModel.getErrorCode(), "confirmation token not found");
+            }
+        }
+
+        try {
+            userFound = confirmationTokenFound.getUser();
+            if (userFound == null) {
+                log.error(logTitle + "user not found by confirmaiton token");
+                throw new NotFoundException(NOT_FOUND_USER, "user not found by confirmaiton token");
+            }
+        } catch (BaseExceptionModel exceptionModel) {
+            if (exceptionModel.getClass() == NotFoundException.class) {
+                log.error(logTitle + "user not found by token");
+                allErrorMessages.put(exceptionModel.getErrorCode(), "user not found by token");
+            }
+        }
+
+        try {
+            confirmationTokenService.verifyConfirmationToken(confirmationTokenFound.getConfirmationToken());
+        } catch (BaseExceptionModel exceptionModel) {
+            if (exceptionModel.getClass() == AlReadyExistException.class) {
+                log.error(logTitle + "user already confirmed");
+                allErrorMessages.put(exceptionModel.getErrorCode(), "user already confirmed");
+            } else if (exceptionModel.getClass() == NotValidException.class) {
+                log.error(logTitle + "confirmation token nat valid, expired");
+                allErrorMessages.put(exceptionModel.getErrorCode(), "confirmation token nat valid, expired");
+            }
+        }
 
 
-         */
+        try {
+
+            if (confirmationTokenService.setConfirmedAt(confirmationTokenFound.getConfirmationToken())) {
+                userService.setConfirmedUser(userFound);
+
+                log.info(logTitle + " user confirmed");
+                log.info(logTitle + "added to log user registered");
+            } else {
+                log.error(logTitle + "user not confirmed");
+
+                throw new UnSuccessfulException(UN_SUCCESSFUL_CONFIRMATION_TOKEN_CONFIRMED, "not confirmed user");
+            }
+
+        } catch (BaseExceptionModel exceptionModel) {
+            if (exceptionModel.getClass() == UnSuccessfulException.class) {
+                log.error(logTitle + "unsuccessful performed confirmed user");
+                allErrorMessages.put(exceptionModel.getErrorCode(), "unsuccessful performed confirmed user");
+            }
+        }
+
+        System.out.println("gelen hatalar : "+allErrorMessages);
+
+        if (allErrorMessages.isEmpty()) {
+            return new RegistrationResponse(
+                    "user registration is succesfully",
+                    userFound.getEmail(),
+                    userFound.getNickName()
+            );
+        } else {
+            throw new UnSuccessfulException(UN_SUCCESSFUL_REGISTRATION, allErrorMessages.toString());
+        }
     }
 
     @Override
@@ -106,7 +170,7 @@ public class AuthenticationService implements IAuthenticationService {
         if (loginRequest.getPassword() != null) {
             if (loginRequest.getUserNickname() != null && loginRequest.getEmail() != null) {
 
-                log.error(logTitle+"just one of username or email options");
+                log.error(logTitle + "just one of username or email options");
                 throw new UnAcceptableException(UN_ACCEPTABLE_LOGIN_REQUEST,
                         "just one from username or email options");
 
@@ -128,12 +192,12 @@ public class AuthenticationService implements IAuthenticationService {
                         .convert(userDtoFound);
             } else if (loginRequest.getUserNickname() == null && loginRequest.getEmail() == null) {
 
-                log.error(logTitle+"need email or username to login");
+                log.error(logTitle + "need email or username to login");
                 throw new UnAcceptableException(UN_ACCEPTABLE_LOGIN_REQUEST,
                         "need email or username to login");
             }
         } else {
-            log.error(logTitle+"need password to login");
+            log.error(logTitle + "need password to login");
             throw new UnAcceptableException(UN_ACCEPTABLE_LOGIN_REQUEST,
                     "need password to login");
         }
@@ -170,13 +234,13 @@ public class AuthenticationService implements IAuthenticationService {
                         _accessToken, _refreshToken);
 
             } else {
-                log.error(logTitle+"user already login");
+                log.error(logTitle + "user already login");
                 throw new AlReadyExistException(ALREADY_EXIST_REFRESH_TOKEN, "user already login");
             }
 
 
         } else {
-            log.error(logTitle+"user not found for login");
+            log.error(logTitle + "user not found for login");
             throw new NotFoundException(NOT_FOUND_USER, "user not found for login");
         }
     }

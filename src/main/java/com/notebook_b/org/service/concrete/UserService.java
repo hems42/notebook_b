@@ -218,7 +218,7 @@ public class UserService implements IUserService {
     @Override
     public Boolean setConfirmedUser(User user) {
 
-        user.setIsActive(true);
+        user.setIsRegistered(true);
         user.setUpdatedDate(LocalDateTime.now());
         User userFound = userDao.save(user);
         addRegisteredLogToUser(null, user);
@@ -336,12 +336,5 @@ public class UserService implements IUserService {
             return true;
         }
     }
-
-//    private Boolean util_isNotExistUserByUserNickNameOrEmail(@Nullable String userId ,
-//                                                             @Nullable String userNickName,
-//                                                             @Nullable String email)
-//    {
-//
-//    }
 
 }
