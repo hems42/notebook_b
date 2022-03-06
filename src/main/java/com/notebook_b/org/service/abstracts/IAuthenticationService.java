@@ -3,9 +3,7 @@ package com.notebook_b.org.service.abstracts;
 import com.notebook_b.org.product.request.authenticate.LogoutRequest;
 import com.notebook_b.org.product.request.authenticate.LoginRequest;
 import com.notebook_b.org.product.request.authenticate.SignUpRequest;
-import com.notebook_b.org.product.response.LoginResponse;
-import com.notebook_b.org.product.response.RegistrationResponse;
-import com.notebook_b.org.product.response.SignUpResponse;
+import com.notebook_b.org.product.response.*;
 
 public interface IAuthenticationService {
 
@@ -15,6 +13,6 @@ public interface IAuthenticationService {
 
     LoginResponse logIn(LoginRequest loginRequest);
 
-    void refreshToken();
+    RefreshTokenResponse refreshToken();
 
-    LogoutRequest logOut(LogoutRequest logoutRequest);}
+    LogOutResponse logOut(LogoutRequest logoutRequest);}

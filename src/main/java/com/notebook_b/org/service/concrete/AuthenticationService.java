@@ -1,9 +1,10 @@
 package com.notebook_b.org.service.concrete;
 
-import com.notebook_b.org.core.constants.coreConstants.CoreExceptionErrorCodeConstants;
-import com.notebook_b.org.core.constants.coreEnums.CoreEnumExceptionMessages;
 import com.notebook_b.org.core.exceptions.abstracts.BaseExceptionModel;
-import com.notebook_b.org.core.exceptions.exceptionModel.*;
+import com.notebook_b.org.core.exceptions.exceptionModel.AlReadyExistException;
+import com.notebook_b.org.core.exceptions.exceptionModel.NotFoundException;
+import com.notebook_b.org.core.exceptions.exceptionModel.UnAcceptableException;
+import com.notebook_b.org.core.exceptions.exceptionModel.UnSuccessfulException;
 import com.notebook_b.org.entity.leadRole.User;
 import com.notebook_b.org.entity.security.ConfirmationToken;
 import com.notebook_b.org.entity.security.RefreshToken;
@@ -14,10 +15,7 @@ import com.notebook_b.org.product.request.authenticate.LogoutRequest;
 import com.notebook_b.org.product.request.authenticate.RegistrationRequest;
 import com.notebook_b.org.product.request.authenticate.SignUpRequest;
 import com.notebook_b.org.product.request.createRequest.UserRequestCreate;
-import com.notebook_b.org.product.response.AccessTokenResponse;
-import com.notebook_b.org.product.response.LoginResponse;
-import com.notebook_b.org.product.response.RegistrationResponse;
-import com.notebook_b.org.product.response.SignUpResponse;
+import com.notebook_b.org.product.response.*;
 import com.notebook_b.org.service.abstracts.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -246,12 +244,13 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
     @Override
-    public void refreshToken() {
+    public RefreshTokenResponse refreshToken() {
 
+        return new RefreshTokenResponse();
     }
 
     @Override
-    public LogoutRequest logOut(LogoutRequest logoutRequest) {
+    public LogOutResponse logOut(LogoutRequest logoutRequest) {
         return null;
     }
 }
