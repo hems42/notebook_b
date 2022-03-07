@@ -30,7 +30,7 @@ public class AuthenticationController implements IAuthenticationController {
     @GetMapping("/registration")
     public RegistrationResponse confirmUser(@RequestParam String confirmToken) {
 
-      return  authenticationService.register(confirmToken);
+        return authenticationService.register(confirmToken);
 
     }
 
@@ -40,12 +40,9 @@ public class AuthenticationController implements IAuthenticationController {
     }
 
 
-
     @GetMapping("/refreshToken")
-    public ResponseEntity<?> refreshToken() {
-
-        throw  new NotFoundException(CoreEnumExceptionMessages.NOT_FOUND_ACCESS_TOKEN,"token yok amına koduum nerde token yavşak");
-
+    public ResponseEntity<?> refreshToken(@RequestParam String refreshToken) {
+        return ResponseEntity.ok(authenticationService.refreshToken(refreshToken));
     }
 
 

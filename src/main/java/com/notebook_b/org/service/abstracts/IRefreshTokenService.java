@@ -15,6 +15,8 @@ public interface IRefreshTokenService {
 
     Optional<RefreshToken> getRefreshTokenByUser(User user);
 
+    Optional<User> getUserByRefreshToken(RefreshToken refreshToken);
+
     Boolean verifyRefreshToken(RefreshToken refreshToken);
 
     Boolean verifyRefreshToken(User user);

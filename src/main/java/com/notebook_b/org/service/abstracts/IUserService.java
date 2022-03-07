@@ -25,7 +25,7 @@ public interface IUserService {
 
     DataResult<List<UserDto>> getAllUsers();
 
-    DataResult<UserDto> updateUserById(String id,UserRequestUpdate requestUpdate);
+    DataResult<UserDto> updateUserById(String id, UserRequestUpdate requestUpdate);
 
     DataResult<Boolean> deleteUserById(String id);
 
@@ -43,6 +43,7 @@ public interface IUserService {
     DataResult addRegisteredLogToUser(@Nullable String userNickName, @Nullable User user);
 
 
-
     Boolean setConfirmedUser(User user);
+
+    Boolean verifyUserPassword(User user, String password);
 }

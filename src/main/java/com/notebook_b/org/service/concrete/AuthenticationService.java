@@ -1,5 +1,6 @@
 package com.notebook_b.org.service.concrete;
 
+import com.notebook_b.org.core.constants.coreConstants.CoreExceptionErrorCodeConstants;
 import com.notebook_b.org.core.exceptions.abstracts.BaseExceptionModel;
 import com.notebook_b.org.core.exceptions.exceptionModel.AlReadyExistException;
 import com.notebook_b.org.core.exceptions.exceptionModel.NotFoundException;
@@ -19,9 +20,6 @@ import com.notebook_b.org.product.response.*;
 import com.notebook_b.org.service.abstracts.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.notebook_b.org.core.constants.coreConstants.CoreExceptionErrorCodeConstants.*;
 import static com.notebook_b.org.core.constants.coreEnums.CoreEnumExceptionMessages.*;
@@ -209,52 +207,56 @@ public class AuthenticationService implements IAuthenticationService {
 
 
             if (userDtoFound != null) {
-                if (refreshTokenService.getRefreshTokenByUser(userFound) == null) {
 
-                    _accessToken = accessTokenService
-                            .createAccessTokenWithUserName(userDtoFound.getNickName())
-                            .getAccessToken();
+                if (userService.verifyUserPassword(userFound, loginRequest.getPassword())) {
+                    if (refreshTokenService.getRefreshTokenByUser(userFound) == null) {
 
-                    accessTokenService
-                            .authenticateUser(
-                                    userDtoFound.getNickName(),
-                                    loginRequest.getPassword()
-                            );
+                        _accessToken = accessTokenService
+                                .createAccessTokenWithUserName(userDtoFound.getNickName())
+                                .getAccessToken();
 
-                    _refreshToken = refreshTokenService
-                            .saveRefreshToken(refreshTokenService
-                                    .createRefreshToken(userFound))
-                            .get().getRefreshToken();
+                        accessTokenService
+                                .authenticateUser(
+                                        userDtoFound.getNickName(),
+                                        loginRequest.getPassword()
+                                );
 
-                    userService.addLogInLogToUser(null, userFound);
+                        _refreshToken = refreshTokenService
+                                .saveRefreshToken(refreshTokenService
+                                        .createRefreshToken(userFound))
+                                .get().getRefreshToken();
 
-                    return new LoginResponse(userDtoFound.getId(),
-                            userDtoFound.getNickName(),
-                            userDtoFound.getEmail(),
-                            userDtoFound.getActive(),
-                            userDtoFound.getRegistered(),
-                            userDtoFound.getRoles(),
-                            userDtoFound.getCreatedDate(),
-                            userDtoFound.getUpdatedDate(),
-                            _accessToken, _refreshToken);
+                        userService.addLogInLogToUser(null, userFound);
 
+                        return new LoginResponse(userDtoFound.getId(),
+                                userDtoFound.getNickName(),
+                                userDtoFound.getEmail(),
+                                userDtoFound.getActive(),
+                                userDtoFound.getRegistered(),
+                                userDtoFound.getRoles(),
+                                userDtoFound.getCreatedDate(),
+                                userDtoFound.getUpdatedDate(),
+                                _accessToken, _refreshToken);
+
+                    } else {
+                        log.error(logTitle + "user already login");
+                        throw new AlReadyExistException(ALREADY_EXIST_REFRESH_TOKEN, "user already login");
+                    }
                 } else {
-                    log.error(logTitle + "user already login");
-                    throw new AlReadyExistException(ALREADY_EXIST_REFRESH_TOKEN, "user already login");
-                }
 
+                    log.error(logTitle + "user password not matched with sent password");
+
+                    throw new UnAcceptableException(UN_ACCEPTABLE_USER_PASSWORD, "user password not matched with sent password");
+                }
 
             } else {
                 log.error(logTitle + "user not found for login");
                 throw new NotFoundException(NOT_FOUND_USER, "user not found for login");
             }
-        }
-
-        catch (BaseExceptionModel exceptionModel)
-        {
+        } catch (BaseExceptionModel exceptionModel) {
             log.error(logTitle + "user not login because : " + exceptionModel.getErrorDescription());
 
-            throw new UnSuccessfulException(UN_SUCCESSFUL_REGISTRATION,
+            throw new UnSuccessfulException(UN_SUCCESSFUL_LOGIN,
                     exceptionModel.getErrorCode() + " : " + exceptionModel.getErrorDescription());
         }
 
@@ -262,13 +264,66 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
     @Override
-    public RefreshTokenResponse refreshToken() {
+    public RefreshTokenResponse refreshToken(String refreshToken) {
 
-        return new RefreshTokenResponse();
+        RefreshToken refreshTokenFound;
+        User userFound;
+
+        try {
+            refreshTokenFound = refreshTokenService.getRefreshTokenByToken(refreshToken).get();
+
+            if (refreshTokenFound != null) {
+                try {
+                    if (refreshTokenService.verifyRefreshToken(refreshTokenFound)) {
+                        throw new UnSuccessfulException(UN_SUCCESSFUL_REFRESH_TOKEN_RENEW, "refresh token is current still");
+                    }
+                    else
+                    {
+                        return  null;
+                    }
+                } catch (BaseExceptionModel exceptionModel) {
+                    if (exceptionModel.getErrorCode().startsWith(NOT_VALID_EXCEPTION_ERROR_CODE)) {
+
+                        userFound = refreshTokenFound.getUser();
+
+                        refreshTokenService.deleteRefreshToken(refreshTokenFound);
+
+                        String accessToken = accessTokenService.createAccessTokenWithUserName(userFound.getNickName()).getAccessToken();
+                        accessTokenService.verifyAccessToken(accessToken);
+
+                        return new RefreshTokenResponse(
+                                refreshTokenService.saveRefreshToken(refreshTokenService.createRefreshToken(userFound)).get().getRefreshToken(),
+                                accessToken,
+                                true,
+                                true
+                        );
+
+                    }
+                    else
+                    {
+                        throw new UnSuccessfulException(UN_SUCCESSFUL_REFRESH_TOKEN_RENEW, "refresh token is current still");
+
+                    }
+                }
+            }
+            else {
+
+                throw new NotFoundException(NOT_FOUND_USER,"user not foun by refresh token");
+            }
+
+
+        } catch (BaseExceptionModel exceptionModel) {
+
+            log.error(logTitle + "refresh token not did not renew because : " + exceptionModel.getErrorDescription());
+
+            throw new UnSuccessfulException(UN_SUCCESSFUL_REFRESH_TOKEN_RENEW,
+                    exceptionModel.getErrorCode() + " : " + exceptionModel.getErrorDescription());
+        }
+
     }
 
     @Override
-    public LogOutResponse logOut(LogoutRequest logoutRequest) {
+    public LogOutResponse logOut(String refreshToken) {
         return null;
     }
 }

@@ -13,9 +13,9 @@ public interface IAuthenticationService {
 
     LoginResponse logIn(LoginRequest loginRequest);
 
-    RefreshTokenResponse refreshToken();
+    RefreshTokenResponse refreshToken(String refreshToken);
 
-    LogOutResponse logOut(LogoutRequest logoutRequest);
+    LogOutResponse logOut(String refreshToken);
 
 
 

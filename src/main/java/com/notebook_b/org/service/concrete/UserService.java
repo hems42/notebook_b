@@ -3,6 +3,7 @@ package com.notebook_b.org.service.concrete;
 import com.notebook_b.org.core.constants.coreEnums.CoreEnumExceptionMessages;
 import com.notebook_b.org.core.exceptions.exceptionModel.AlReadyExistException;
 import com.notebook_b.org.core.exceptions.exceptionModel.NotFoundException;
+import com.notebook_b.org.core.exceptions.exceptionModel.UnAcceptableException;
 import com.notebook_b.org.entity.security.Role;
 import com.notebook_b.org.product.appEnums.AppEnumRoleTypes;
 import com.notebook_b.org.product.dto.AddressDto;
@@ -27,14 +28,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.NotAcceptableStatusException;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.notebook_b.org.core.constants.coreEnums.CoreEnumExceptionMessages.ALREADY_EXIST_USER;
-import static com.notebook_b.org.core.constants.coreEnums.CoreEnumExceptionMessages.NOT_FOUND_USER;
+import static com.notebook_b.org.core.constants.coreEnums.CoreEnumExceptionMessages.*;
 import static com.notebook_b.org.product.appEnums.AppEnumOperationTypes.*;
 
 @Slf4j
@@ -259,6 +260,21 @@ public class UserService implements IUserService {
         return userFound != null;
     }
 
+    @Override
+    public Boolean verifyUserPassword(User user, String password) {
+
+        if (passwordEncoder.matches(password,user.getPassword())) {
+
+            log.info(logTitle + " user password verified");
+
+            return true;
+        } else {
+
+            log.error(logTitle + "user password not matched with sent password");
+
+            throw new UnAcceptableException(UN_ACCEPTABLE_USER_PASSWORD, "user password not matched with sent password");
+        }
+    }
 
     //****************************************************************//
 

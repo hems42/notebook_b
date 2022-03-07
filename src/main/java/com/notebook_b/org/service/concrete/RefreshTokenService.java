@@ -47,7 +47,7 @@ public class RefreshTokenService implements IRefreshTokenService {
 
                 log.error("refresh token not created");
 
-                  throw new UnSuccessfulException(UN_SUCCESSFUL_CREATED_REFRESH_TOKEN, "not created refresh token");
+                  throw new UnSuccessfulException(UN_SUCCESSFUL_REFRESH_TOKEN_CREATED, "not created refresh token");
             }
         } catch (BaseExceptionModel model) {
 
@@ -72,7 +72,7 @@ public class RefreshTokenService implements IRefreshTokenService {
         if (util_isNotExistRefreshToken(refreshToken.getRefreshToken())) {
             return Optional.of(refreshTokenRepository.save(refreshToken));
         } else {
-            throw new UnSuccessfulException(UN_SUCCESSFUL_SAVED_REFRESH_TOKEN, "not added refresh token");
+            throw new UnSuccessfulException(UN_SUCCESSFUL_REFRESH_TOKEN_SAVED, "not added refresh token");
         }
     }
 
@@ -84,14 +84,29 @@ public class RefreshTokenService implements IRefreshTokenService {
     @Override
     public Optional<RefreshToken> getRefreshTokenByUser(User user) {
 
-        RefreshToken refreshToken = util_getRefreshToken(user);
+        try {
+            RefreshToken refreshToken = util_getRefreshToken(user);
 
-        if (refreshToken != null) {
-            return Optional.of(refreshToken);
-        } else {
-            return null;
+            if (refreshToken != null) {
+                return Optional.of(refreshToken);
+            } else {
+                return null;
+            }
         }
+        catch (BaseExceptionModel exceptionModel)
+        {
+            if(exceptionModel.getErrorCode().matches("44005344"))
+            {
+                return null;
+            }
+        }
+    return null;
+    }
 
+    @Override
+    public Optional<User> getUserByRefreshToken(RefreshToken refreshToken) {
+
+        return Optional.empty();
     }
 
     @Override
@@ -110,7 +125,7 @@ public class RefreshTokenService implements IRefreshTokenService {
         if (util_isNotExistRefreshToken(refreshToken)) {
             return refreshTokenRepository.deleteByRefreshToken(refreshToken) > 0;
         } else {
-            throw new UnSuccessfulException(UN_SUCCESSFUL_DELETED_REFRESH_TOKEN, "not deleted refresh token with refresh token");
+            throw new UnSuccessfulException(UN_SUCCESSFUL_REFRESH_TOKEN_DELETED, "not deleted refresh token with refresh token");
         }
 
     }
@@ -120,7 +135,7 @@ public class RefreshTokenService implements IRefreshTokenService {
         if (util_isNotExistRefreshToken(user)) {
             return refreshTokenRepository.deleteByUser(user) > 0;
         } else {
-            throw new UnSuccessfulException(UN_SUCCESSFUL_DELETED_REFRESH_TOKEN, "not deleted refresh token with user");
+            throw new UnSuccessfulException(UN_SUCCESSFUL_REFRESH_TOKEN_DELETED, "not deleted refresh token with user");
         }
     }
 
