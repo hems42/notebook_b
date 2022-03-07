@@ -57,32 +57,47 @@ public class AuthenticationService implements IAuthenticationService {
     @Override
     public SignUpResponse signUp(SignUpRequest signupRequest) {
 
-        UserDto createdUserDto = userService.addUser(
-                new UserRequestCreate(signupRequest.getUserNickName(),
-                        signupRequest.geteMail(), signupRequest.getPassword())).getData();
-        User createdUser = userDtoConvertor.convert(createdUserDto);
+        UserDto userDtoCreated;
+        User userCreated;
+        RefreshToken refreshTokenCreated;
 
-        AccessTokenResponse accessTokenResponse = accessTokenService.createAccessTokenWithUserName(
-                signupRequest.getUserNickName());
+        try {
+            userDtoCreated = userService.addUser(
+                    new UserRequestCreate(signupRequest.getUserNickName(),
+                            signupRequest.geteMail(), signupRequest.getPassword())).getData();
+            userCreated = userDtoConvertor.convert(userDtoCreated);
 
-        accessTokenService.authenticateUser(signupRequest.getUserNickName(),
-                signupRequest.getPassword());
+            AccessTokenResponse accessTokenResponse = accessTokenService.createAccessTokenWithUserName(
+                    signupRequest.getUserNickName());
 
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(createdUser);
-        refreshTokenService.saveRefreshToken(refreshToken);
+            accessTokenService.authenticateUser(signupRequest.getUserNickName(),
+                    signupRequest.getPassword());
 
-        new Thread(() -> registrationService
-                .register(new RegistrationRequest(signupRequest.getUserNickName(),
-                                signupRequest.geteMail(),
-                                signupRequest.getPassword()),
-                        createdUser))
-                .start();
+            refreshTokenCreated = refreshTokenService.createRefreshToken(userCreated);
+            refreshTokenService.saveRefreshToken(refreshTokenCreated);
 
+            new Thread(() -> registrationService
+                    .register(
+                            new RegistrationRequest(
+                                    signupRequest.getUserNickName(),
+                                    signupRequest.geteMail(),
+                                    signupRequest.getPassword()),
+                            userCreated
+                    )).start();
 
-        return new SignUpResponse(
-                accessTokenResponse.getAccessToken(),
-                refreshToken.getRefreshToken(),
-                createdUserDto);
+            log.info(logTitle + "user created successfully");
+
+            return new SignUpResponse(
+                    accessTokenResponse.getAccessToken(),
+                    refreshTokenCreated.getRefreshToken(),
+                    userDtoCreated);
+        } catch (BaseExceptionModel exceptionModel) {
+            log.error(logTitle + "user not not created: " + exceptionModel.getErrorDescription());
+
+            throw new UnSuccessfulException(UN_SUCCESSFUL_USER_CREATE,
+                    exceptionModel.getErrorCode() + " : " + exceptionModel.getErrorDescription());
+        }
+
     }
 
     @Override
@@ -117,7 +132,7 @@ public class AuthenticationService implements IAuthenticationService {
                                 "user registered",
                                 confirmationTokenFound.getUser().getEmail(),
                                 confirmationTokenFound.getUser().getNickName()
-                                );
+                        );
                     } else {
 
                         log.error(logTitle + " confirmation token could not be confirmed");
@@ -156,82 +171,94 @@ public class AuthenticationService implements IAuthenticationService {
         String _accessToken;
         String _refreshToken;
 
-        if (loginRequest.getPassword() != null) {
-            if (loginRequest.getUserNickname() != null && loginRequest.getEmail() != null) {
+        try {
+            if (loginRequest.getPassword() != null) {
+                if (loginRequest.getUserNickname() != null && loginRequest.getEmail() != null) {
 
-                log.error(logTitle + "just one of username or email options");
+                    log.error(logTitle + "just one of username or email options");
+                    throw new UnAcceptableException(UN_ACCEPTABLE_LOGIN_REQUEST,
+                            "just one from username or email options");
+
+                } else if (loginRequest.getUserNickname() != null && loginRequest.getEmail() == null) {
+
+                    userDtoFound = userService
+                            .getUserByNickName(loginRequest.getUserNickname())
+                            .getData();
+
+                    userFound = userDtoConvertor
+                            .convert(userDtoFound);
+
+                } else if (loginRequest.getUserNickname() == null && loginRequest.getEmail() != null) {
+                    userDtoFound = userService
+                            .getUserByEmail(loginRequest.getEmail())
+                            .getData();
+
+                    userFound = userDtoConvertor
+                            .convert(userDtoFound);
+                } else if (loginRequest.getUserNickname() == null && loginRequest.getEmail() == null) {
+
+                    log.error(logTitle + "need email or username to login");
+                    throw new UnAcceptableException(UN_ACCEPTABLE_LOGIN_REQUEST,
+                            "need email or username to login");
+                }
+            } else {
+                log.error(logTitle + "need password to login");
                 throw new UnAcceptableException(UN_ACCEPTABLE_LOGIN_REQUEST,
-                        "just one from username or email options");
-
-            } else if (loginRequest.getUserNickname() != null && loginRequest.getEmail() == null) {
-
-                userDtoFound = userService
-                        .getUserByNickName(loginRequest.getUserNickname())
-                        .getData();
-
-                userFound = userDtoConvertor
-                        .convert(userDtoFound);
-
-            } else if (loginRequest.getUserNickname() == null && loginRequest.getEmail() != null) {
-                userDtoFound = userService
-                        .getUserByEmail(loginRequest.getEmail())
-                        .getData();
-
-                userFound = userDtoConvertor
-                        .convert(userDtoFound);
-            } else if (loginRequest.getUserNickname() == null && loginRequest.getEmail() == null) {
-
-                log.error(logTitle + "need email or username to login");
-                throw new UnAcceptableException(UN_ACCEPTABLE_LOGIN_REQUEST,
-                        "need email or username to login");
+                        "need password to login");
             }
-        } else {
-            log.error(logTitle + "need password to login");
-            throw new UnAcceptableException(UN_ACCEPTABLE_LOGIN_REQUEST,
-                    "need password to login");
-        }
 
 
-        if (userDtoFound != null) {
-            if (refreshTokenService.getRefreshTokenByUser(userFound) == null) {
+            if (userDtoFound != null) {
+                if (refreshTokenService.getRefreshTokenByUser(userFound) == null) {
 
-                _accessToken = accessTokenService
-                        .createAccessTokenWithUserName(userDtoFound.getNickName())
-                        .getAccessToken();
+                    _accessToken = accessTokenService
+                            .createAccessTokenWithUserName(userDtoFound.getNickName())
+                            .getAccessToken();
 
-                accessTokenService
-                        .authenticateUser(
-                                userDtoFound.getNickName(),
-                                loginRequest.getPassword()
-                        );
+                    accessTokenService
+                            .authenticateUser(
+                                    userDtoFound.getNickName(),
+                                    loginRequest.getPassword()
+                            );
 
-                _refreshToken = refreshTokenService
-                        .saveRefreshToken(refreshTokenService
-                                .createRefreshToken(userFound))
-                        .get().getRefreshToken();
+                    _refreshToken = refreshTokenService
+                            .saveRefreshToken(refreshTokenService
+                                    .createRefreshToken(userFound))
+                            .get().getRefreshToken();
 
-                userService.addLogInLogToUser(null, userFound);
+                    userService.addLogInLogToUser(null, userFound);
 
-                return new LoginResponse(userDtoFound.getId(),
-                        userDtoFound.getNickName(),
-                        userDtoFound.getEmail(),
-                        userDtoFound.getActive(),
-                        userDtoFound.getRegistered(),
-                        userDtoFound.getRoles(),
-                        userDtoFound.getCreatedDate(),
-                        userDtoFound.getUpdatedDate(),
-                        _accessToken, _refreshToken);
+                    return new LoginResponse(userDtoFound.getId(),
+                            userDtoFound.getNickName(),
+                            userDtoFound.getEmail(),
+                            userDtoFound.getActive(),
+                            userDtoFound.getRegistered(),
+                            userDtoFound.getRoles(),
+                            userDtoFound.getCreatedDate(),
+                            userDtoFound.getUpdatedDate(),
+                            _accessToken, _refreshToken);
+
+                } else {
+                    log.error(logTitle + "user already login");
+                    throw new AlReadyExistException(ALREADY_EXIST_REFRESH_TOKEN, "user already login");
+                }
+
 
             } else {
-                log.error(logTitle + "user already login");
-                throw new AlReadyExistException(ALREADY_EXIST_REFRESH_TOKEN, "user already login");
+                log.error(logTitle + "user not found for login");
+                throw new NotFoundException(NOT_FOUND_USER, "user not found for login");
             }
-
-
-        } else {
-            log.error(logTitle + "user not found for login");
-            throw new NotFoundException(NOT_FOUND_USER, "user not found for login");
         }
+
+        catch (BaseExceptionModel exceptionModel)
+        {
+            log.error(logTitle + "user not login because : " + exceptionModel.getErrorDescription());
+
+            throw new UnSuccessfulException(UN_SUCCESSFUL_REGISTRATION,
+                    exceptionModel.getErrorCode() + " : " + exceptionModel.getErrorDescription());
+        }
+
+
     }
 
     @Override

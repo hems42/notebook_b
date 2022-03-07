@@ -63,7 +63,7 @@ public class RoleService implements IRoleService {
             return new SuccessDataResult(roleDtoConvertor.convert(foundRole),
                     CoreEnumResponseMessages.ROLE_SUCCESSFULLY_ADDED.toString());
         } else {
-            throw new UnSuccessfulException(UN_SUCCESSFUL_CREATED_ROLE, "cant created role");
+            throw new UnSuccessfulException(UN_SUCCESSFUL_ROLE_CREATED, "cant created role");
         }
     }
 
