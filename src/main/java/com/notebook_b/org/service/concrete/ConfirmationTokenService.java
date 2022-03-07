@@ -23,7 +23,7 @@ public class ConfirmationTokenService implements IConfirmationTokenService {
 
     private final ConfirmationTokenDao confirmationTokenRepository;
 
-    private final String logTitle = "ConfirmationTokenService ";
+    private final String logTitle = "ConfirmationTokenService : -> ";
 
     public ConfirmationTokenService(ConfirmationTokenDao confirmationTokenRepository) {
         this.confirmationTokenRepository = confirmationTokenRepository;
@@ -32,7 +32,7 @@ public class ConfirmationTokenService implements IConfirmationTokenService {
     @Override
     public ConfirmationToken createConfirmationToken(User user) {
 
-        log.info(logTitle+"confirmation token created");
+        log.info(logTitle + "confirmation token created");
         return new ConfirmationToken(
                 null,
                 user,
@@ -277,7 +277,12 @@ public class ConfirmationTokenService implements IConfirmationTokenService {
     //-- sub util
     private Boolean util_i_verifyConfirmationToken(ConfirmationToken confirmationToken, String loggedBy) {
 
-        if (confirmationToken.getConfirmedAt() != null) {
+        if (confirmationToken.getUser()==null) {
+
+            log.error(logTitle+" confirmation token has not a user");
+            throw new NotFoundException(NOT_FOUND_USER,"confirmation token has not a user");
+
+        } else if (confirmationToken.getConfirmedAt() != null) {
 
             log.error(logTitle + "confirmation token already confirmed -" + loggedBy);
             throw new AlReadyAcceptedException(ALREADY_ACCEPTED_CONFIRMATION_TOKEN_CONFIRMED,

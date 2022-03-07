@@ -37,7 +37,7 @@ public class AuthenticationService implements IAuthenticationService {
     private final IRefreshTokenService refreshTokenService;
     private final IConfirmationTokenService confirmationTokenService;
 
-    private final String logTitle = "AuthenticationService ";
+    private final String logTitle = "AuthenticationService : -> ";
 
 
     public AuthenticationService(IUserService userService,
@@ -88,72 +88,63 @@ public class AuthenticationService implements IAuthenticationService {
     @Override
     public RegistrationResponse register(String confirmationToken) {
 
-        Map<String, String> allErrorMessages = new HashMap<>();
-        User userFound = null;
         ConfirmationToken confirmationTokenFound = null;
 
         try {
             confirmationTokenFound = confirmationTokenService.getConfirmationToken(confirmationToken).get();
+
+            if (confirmationTokenFound != null) {
+
+                log.info(logTitle + "confirmation token found by confirmation token");
+
+                Boolean verifyResult = confirmationTokenService.verifyConfirmationToken(confirmationToken);
+
+                if (verifyResult) {
+
+                    log.info(logTitle + "confirmation token verified");
+
+                    if (confirmationTokenService.setConfirmedAt(confirmationTokenFound.getConfirmationToken())) {
+
+                        log.info(logTitle + "confirmation token confirmed successfully");
+
+                        userService.setConfirmedUser(confirmationTokenFound.getUser());
+
+                        log.info(logTitle + " user confirmed");
+
+                        log.info(logTitle + "added to log user registered");
+
+                        return new RegistrationResponse(
+                                "user registered",
+                                confirmationTokenFound.getUser().getEmail(),
+                                confirmationTokenFound.getUser().getNickName()
+                                );
+                    } else {
+
+                        log.error(logTitle + " confirmation token could not be confirmed");
+
+                        throw new UnSuccessfulException(UN_SUCCESSFUL_REGISTRATION, "token confirmation unsuccess");
+                    }
+
+
+                } else {
+
+                    log.error(logTitle + "confirmation token not verified");
+
+                    throw new UnSuccessfulException(UN_SUCCESSFUL_REGISTRATION, "not verified confirmation token");
+                }
+
+            } else {
+
+                log.error(logTitle + "confirmation token not found");
+
+                throw new NotFoundException(NOT_FOUND_CONFIRMATION_TOKEN, "not found confirmation token");
+            }
         } catch (BaseExceptionModel exceptionModel) {
-            if (exceptionModel.getErrorCode().startsWith(NOT_FOUND_EXCEPTION_ERROR_CODE)) {
-                log.error(logTitle + "confirmation token not found by token");
-                allErrorMessages.put(exceptionModel.getErrorCode(), "confirmation token not found");
-            }
-        }
 
-        try {
-            userFound = confirmationTokenFound.getUser();
-            if (userFound == null) {
-                log.error(logTitle + "user not found by confirmation token");
-                throw new NotFoundException(NOT_FOUND_USER, "user not found by confirmation token");
-            }
-        } catch (BaseExceptionModel exceptionModel) {
-            if (exceptionModel.getErrorCode().startsWith(NOT_FOUND_EXCEPTION_ERROR_CODE)) {
-                log.error(logTitle + "user not found by token");
-                allErrorMessages.put(exceptionModel.getErrorCode(), "user not found by token");
-            }
-        }
+            log.error(logTitle + "user not confirmed because : " + exceptionModel.getErrorDescription());
 
-        try {
-            confirmationTokenService.verifyConfirmationToken(confirmationTokenFound.getConfirmationToken());
-        } catch (BaseExceptionModel exceptionModel) {
-            if (exceptionModel.getErrorCode().startsWith(ALREADY_ACCEPTED_EXCEPTION_ERROR_CODE)) {
-                log.error(logTitle + "user already confirmed");
-                allErrorMessages.put(exceptionModel.getErrorCode(), "user already confirmed");
-            } else if (exceptionModel.getErrorCode().startsWith(NOT_VALID_EXCEPTION_ERROR_CODE)) {
-                log.error(logTitle + "confirmation token nat valid, expired");
-                allErrorMessages.put(exceptionModel.getErrorCode(), "confirmation token nat valid, expired");
-            }
-        }
-
-
-        if (allErrorMessages.isEmpty()) {
-
-            if (confirmationTokenService.setConfirmedAt(confirmationTokenFound.getConfirmationToken())) {
-
-                userService.setConfirmedUser(userFound);
-
-                log.info(logTitle + " user confirmed");
-
-                log.info(logTitle + "added to log user registered");
-
-                return new RegistrationResponse(
-                        "user registered",
-                        userFound.getEmail(),
-                        userFound.getNickName());
-            }
-            else {
-
-                log.error(logTitle + "user not confirmed");
-
-                throw new UnSuccessfulException(UN_SUCCESSFUL_REGISTRATION, allErrorMessages.toString());
-            }
-
-        } else {
-
-            log.error(logTitle + "user not confirmed");
-
-            throw new UnSuccessfulException(UN_SUCCESSFUL_REGISTRATION, allErrorMessages.toString());
+            throw new UnSuccessfulException(UN_SUCCESSFUL_REGISTRATION,
+                    exceptionModel.getErrorCode() + " : " + exceptionModel.getErrorDescription());
         }
     }
 
