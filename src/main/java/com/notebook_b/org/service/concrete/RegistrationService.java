@@ -13,12 +13,16 @@ import com.notebook_b.org.service.abstracts.IAccessTokenService;
 import com.notebook_b.org.service.abstracts.IConfirmationTokenService;
 import com.notebook_b.org.service.abstracts.IRefreshTokenService;
 import com.notebook_b.org.service.abstracts.IRegistrationService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import static com.notebook_b.org.core.constants.coreEnums.CoreEnumExceptionMessages.NOT_VALID_E_MAIL_ADDRESS;
 
+@Slf4j
 @Service
 public class RegistrationService implements IRegistrationService {
+
+    private final String logTitle = "RegistrationService : -> ";
 
     private final IEmailSenderService emailSenderService;
     private final IEmailCheckerService emailCheckerService;
@@ -44,19 +48,33 @@ public class RegistrationService implements IRegistrationService {
 
         if (emailCheckerService.checkEMailAddress(request.getEmail())) {
 
+            log.info(logTitle+"email is checked true");
+
             ConfirmationToken token = confirmationTokenService.createConfirmationToken(user);
+
+            log.info(logTitle+"confirmation token created");
 
             confirmationTokenService.saveConfirmationToken(token);
 
+            log.info(logTitle+"confirmation,on token saved");
+
             String link = AppConstants.MAIL_SEND_LINK + token.getConfirmationToken();
+
+            log.info(logTitle+"email link fetched : "+link);
 
             emailSenderService.sendSimpleMessage(request.getEmail(),
                     "click the link for  register your account now!!!",
                     buildEmail(request.getUserNickName(), link)
             );
+
+            log.info(logTitle+"email sent to user mail address");
+
             return token.getConfirmationToken();
 
         } else {
+
+            log.error(logTitle+"email address is not valid");
+
             throw new NotValidException(NOT_VALID_E_MAIL_ADDRESS, "email not valid");
         }
     }
@@ -65,8 +83,14 @@ public class RegistrationService implements IRegistrationService {
     public Boolean confirmToken(String confirmationToken) {
 
         if (confirmationTokenService.verifyConfirmationToken(confirmationToken)) {
+
+            log.info(logTitle+"confirmation token verified");
+
             return confirmationTokenService.setConfirmedAt(confirmationToken);
         } else {
+
+            log.error(logTitle+"confirmation token not verified");
+
             throw new UnSuccessfulException(CoreEnumExceptionMessages.UN_SUCCESSFUL_CONFIRMATION_TOKEN_CONFIRMED,
                     "confirmation token cant confirmed");
         }

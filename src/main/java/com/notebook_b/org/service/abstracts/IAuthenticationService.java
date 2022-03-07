@@ -15,4 +15,8 @@ public interface IAuthenticationService {
 
     RefreshTokenResponse refreshToken();
 
-    LogOutResponse logOut(LogoutRequest logoutRequest);}
+    LogOutResponse logOut(LogoutRequest logoutRequest);
+
+
+
+}

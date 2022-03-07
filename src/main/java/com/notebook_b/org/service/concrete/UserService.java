@@ -41,6 +41,8 @@ import static com.notebook_b.org.product.appEnums.AppEnumOperationTypes.*;
 @Service
 public class UserService implements IUserService {
 
+    private final String logTitle = "UserService : -> ";
+
     private final UserDao userDao;
     private final UserDtoConvertor userDtoConvertor;
     private final ILogUserService logUserService;
@@ -88,8 +90,13 @@ public class UserService implements IUserService {
 
             UserDto userDto = userDtoConvertor.convert(userFound);
 
+            log.info(logTitle + "user created successfully");
+
             return new SuccessDataResult<>(userDto, "user created successfully");
         } else {
+
+            log.error(logTitle + " user not created already created");
+
             throw new AlReadyExistException(CoreEnumExceptionMessages.ALREADY_EXIST_USER, "user already created");
         }
 
@@ -169,8 +176,14 @@ public class UserService implements IUserService {
     @Override
     public DataResult addLogInLogToUser(@Nullable String userNickName, @Nullable User user) {
         if (userNickName != null) {
+
+            log.info(logTitle + "login log added to user by user nickname");
+
             return util_addLogToUser(userNickName, new LogUserRequestCreate(LOG_IN));
         } else {
+
+            log.info(logTitle + "login log added to user by user");
+
             return util_addLogToUser(user, new LogUserRequestCreate(LOG_IN));
 
         }
@@ -181,8 +194,14 @@ public class UserService implements IUserService {
     public DataResult addLogOutLogToUser(@Nullable String userNickName, @Nullable User user) {
 
         if (userNickName != null) {
+
+            log.info(logTitle + "logout log added to user by user nickname");
+
             return util_addLogToUser(userNickName, new LogUserRequestCreate(LOG_OUT));
         } else {
+
+            log.info(logTitle + "logout log added to user by user");
+
             return util_addLogToUser(user, new LogUserRequestCreate(LOG_OUT));
 
         }
@@ -191,11 +210,17 @@ public class UserService implements IUserService {
     @Override
     public DataResult addSignUpLogToUser(@Nullable String userNickName, @Nullable User user) {
         if (userNickName != null) {
+
+            log.info(logTitle + "signup log added to user by user nickname");
+
             return util_addLogToUser(userNickName,
                     new LogUserRequestCreate(AppEnumOperationTypes.CREATED),
                     new LogUserRequestCreate(SIGN_UP),
                     new LogUserRequestCreate(LOG_IN));
         } else {
+
+            log.info(logTitle + "signup log added to user by user");
+
             return util_addLogToUser(user,
                     new LogUserRequestCreate(AppEnumOperationTypes.CREATED),
                     new LogUserRequestCreate(SIGN_UP),
@@ -208,8 +233,14 @@ public class UserService implements IUserService {
     public DataResult addRegisteredLogToUser(@Nullable String userNickName, @Nullable User user) {
 
         if (userNickName != null) {
+
+            log.info(logTitle + "register log added to user by user nickname");
+
             return util_addLogToUser(userNickName, new LogUserRequestCreate(REGISTERED));
         } else {
+
+            log.info(logTitle + "register log added to user by user");
+
             return util_addLogToUser(user, new LogUserRequestCreate(REGISTERED));
 
         }
@@ -223,6 +254,8 @@ public class UserService implements IUserService {
         User userFound = userDao.save(user);
         addRegisteredLogToUser(null, user);
 
+        log.info(logTitle + "user confirmed by user");
+
         return userFound != null;
     }
 
@@ -233,14 +266,22 @@ public class UserService implements IUserService {
     private DataResult util_addLogToUser(User user, LogUserRequestCreate... logUserRequestCreates) {
 
         if (user != null) {
+
+            log.info(logTitle + "log list adding to user by user");
+
             for (LogUserRequestCreate logUserRequestCreate : logUserRequestCreates) {
                 logUserService
                         .addLogUser(logUserRequestCreate, user);
             }
 
         } else {
+
+            log.error(logTitle + "log cant add to user by user");
+
             throw new NotFoundException(NOT_FOUND_USER, "cant add log to user");
         }
+
+        log.info(logTitle + "log added to successfully to user");
 
         return new SuccessDataResult<>(userDtoConvertor.convert(user),
                 user.getNickName() + "log added successfully to user");
@@ -251,15 +292,23 @@ public class UserService implements IUserService {
 
         User user = userDao.getUserByNickName(userNickName);
 
+        log.info(logTitle + "log list adding to user by user nick name");
+
         if (user != null) {
+
             for (LogUserRequestCreate logUserRequestCreate : logUserRequestCreates) {
                 logUserService
                         .addLogUser(logUserRequestCreate, user);
             }
 
         } else {
+
+            log.error(logTitle + "log cant add to user by user");
+
             throw new NotFoundException(NOT_FOUND_USER, "cant add log to user");
         }
+
+        log.info(logTitle + "log added to successfully to user");
 
         return new SuccessDataResult<>(userDtoConvertor.convert(user),
                 userNickName + "log added successfully to user");
@@ -269,8 +318,14 @@ public class UserService implements IUserService {
         User userFound = userDao.getById(userId);
 
         if (userFound != null) {
+
+            log.info(logTitle + "user found by user id");
+
             return userFound;
         } else {
+
+            log.error(logTitle + "user not found by user id");
+
             throw new NotFoundException(NOT_FOUND_USER, "user not found by ıd");
         }
     }
@@ -283,8 +338,14 @@ public class UserService implements IUserService {
             userFound = userDao.getUserByNickName(userNickName);
 
             if (userFound != null) {
+
+                log.info(logTitle + "user found by user nick name");
+
                 return userFound;
             } else {
+
+                log.error(logTitle + " user not found by user nick name");
+
                 throw new NotFoundException(NOT_FOUND_USER, "not found user by user nick name");
             }
 
@@ -292,29 +353,51 @@ public class UserService implements IUserService {
             userFound = userDao.getUserByEmail(email);
 
             if (userFound != null) {
+
+                log.info(logTitle + "user found by email");
+
                 return userFound;
             } else {
+
+                log.error(logTitle + "user not found email");
+
                 throw new NotFoundException(NOT_FOUND_USER, "not found user created by email");
             }
 
         } else if (userNickName != null && email != null) {
+
             userFound = userDao.getUserByNickNameOrEmail(userNickName, email);
 
             if (userFound != null) {
+
+                log.info(logTitle + "user found by user nick name and email");
+
                 return userFound;
             } else {
+
+                log.error(logTitle + "user not found by user nick name and email");
+
                 throw new NotFoundException(NOT_FOUND_USER, "not found user by user nick name and  email");
             }
         } else {
-            return null;
+
+            log.error(logTitle + "user not found");
+
+            throw new NotFoundException(NOT_FOUND_USER, "not found user by nothing parameter");
         }
     }
 
     private Boolean util_isNotExistUserById(String userId) {
 
         if (userDao.getById(userId) != null) {
+
+            log.error(logTitle + "user exist already by ıd");
+
             throw new AlReadyExistException(ALREADY_EXIST_USER, "already exist user by id");
         } else {
+
+            log.info(logTitle + "user not exist already by ıd");
+
             return true;
         }
     }
@@ -322,8 +405,14 @@ public class UserService implements IUserService {
     private Boolean util_isNotExistUserByEmail(String email) {
 
         if (userDao.getUserByEmail(email) != null) {
+
+            log.error(logTitle + "user exist already by email");
+
             throw new AlReadyExistException(ALREADY_EXIST_USER, "already exist user by email");
         } else {
+
+            log.info(logTitle + "user not exist already by email");
+
             return true;
         }
     }
@@ -331,8 +420,14 @@ public class UserService implements IUserService {
     private Boolean util_isNotExistUserByUserNickName(String userNickName) {
 
         if (userDao.getUserByNickName(userNickName) != null) {
+
+            log.error(logTitle + "user exist already by user nickname");
+
             throw new AlReadyExistException(ALREADY_EXIST_USER, "already exist user by nick name");
         } else {
+
+            log.info(logTitle + "user not exist already by user nickname");
+
             return true;
         }
     }
