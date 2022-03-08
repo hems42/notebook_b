@@ -47,20 +47,8 @@ public class AuthenticationController implements IAuthenticationController {
 
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@RequestBody LoginRequest loginRequest) {
-/*
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getUserNickname(),
-                            loginRequest.getPassword()));
-       //     userService.addLogToUser(new LogUserRequestCreate(AppEnumUserOperations.LOG_IN), loginRequest.getUserNickname());
-            return ResponseEntity.ok(tokenManager.generateToken(loginRequest.getUserNickname()));
-        } catch (Exception e) {
-            System.out.println("gelen hata :" + e.toString());
-            throw e;
-        }*/
-
-        return ResponseEntity.ok("");
+    public ResponseEntity<?> logout(@RequestParam String refreshToken) {
+       return ResponseEntity.ok(authenticationService.logOut(refreshToken));
     }
 
 

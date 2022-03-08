@@ -276,10 +276,8 @@ public class AuthenticationService implements IAuthenticationService {
                 try {
                     if (refreshTokenService.verifyRefreshToken(refreshTokenFound)) {
                         throw new UnSuccessfulException(UN_SUCCESSFUL_REFRESH_TOKEN_RENEW, "refresh token is current still");
-                    }
-                    else
-                    {
-                        return  null;
+                    } else {
+                        return null;
                     }
                 } catch (BaseExceptionModel exceptionModel) {
                     if (exceptionModel.getErrorCode().startsWith(NOT_VALID_EXCEPTION_ERROR_CODE)) {
@@ -298,19 +296,15 @@ public class AuthenticationService implements IAuthenticationService {
                                 true
                         );
 
-                    }
-                    else
-                    {
+                    } else {
                         throw new UnSuccessfulException(UN_SUCCESSFUL_REFRESH_TOKEN_RENEW, "refresh token is current still");
 
                     }
                 }
-            }
-            else {
+            } else {
 
-                throw new NotFoundException(NOT_FOUND_USER,"user not foun by refresh token");
+                throw new NotFoundException(NOT_FOUND_USER, "user not found by refresh token");
             }
-
 
         } catch (BaseExceptionModel exceptionModel) {
 
@@ -319,11 +313,45 @@ public class AuthenticationService implements IAuthenticationService {
             throw new UnSuccessfulException(UN_SUCCESSFUL_REFRESH_TOKEN_RENEW,
                     exceptionModel.getErrorCode() + " : " + exceptionModel.getErrorDescription());
         }
-
     }
 
     @Override
     public LogOutResponse logOut(String refreshToken) {
-        return null;
+
+        RefreshToken refreshTokenFound = null;
+        User userFound;
+
+        try {
+
+                refreshTokenFound = refreshTokenService.getRefreshTokenByToken(refreshToken).get();
+
+                refreshTokenService.deleteRefreshToken(refreshTokenFound);
+
+                userService.addLogOutLogToUser(null,refreshTokenFound.getUser());
+
+                return new LogOutResponse(true);
+
+
+        } catch (BaseExceptionModel exceptionModel) {
+
+            if(exceptionModel.getErrorCode().startsWith(NOT_FOUND_EXCEPTION_ERROR_CODE))
+            {
+
+            }
+            else if(exceptionModel.getErrorCode().startsWith(ALREADY_EXIST_EXCEPTION_ERROR_CODE))
+            {
+                refreshTokenService.deleteRefreshToken(refreshTokenFound);
+
+                userService.addLogOutLogToUser(null,refreshTokenFound.getUser());
+
+                return new LogOutResponse(true);
+            }
+
+            log.error(logTitle + "user did not logout because : " + exceptionModel.getErrorDescription());
+
+            throw new UnSuccessfulException(UN_SUCCESSFUL_LOGOUT,
+                    exceptionModel.getErrorCode() + " : " + exceptionModel.getErrorDescription());
+        }
+
     }
 }
