@@ -3,6 +3,7 @@ package com.notebook_b.org.product.security.jwt_security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -57,7 +58,7 @@ public class JwtWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .and()
                 .csrf().disable()
                 .authorizeRequests().antMatchers("/api/authentication/**").permitAll()
-                .anyRequest().authenticated()
+                        .anyRequest().authenticated()
             .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()

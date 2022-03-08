@@ -34,7 +34,31 @@ public class UserController implements IUserController {
         return ResponseEntity.ok(userService.addUser(requestCreate));
     }
 
+    @GetMapping("/dene_user")
+    @PreAuthorize("hasRole('USER')")
+    public String deneUser() {
+        return"user için geçerli";
+    }
+
+    @GetMapping("/dene")
+    public String dene() {
+        return"authsuz dene için geçerli";
+    }
+
+    @GetMapping("/dene_admin")
+    @PreAuthorize("hasRole('Admin')")
+    public String deneAdmin() {
+        return"admin için geçerli";
+    }
+
+    @GetMapping("/dene_user_admin")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    public String deneAdminUser() {
+        return"admin ve user için geçerli";
+    }
+
     @GetMapping("/getAllUsers")
+    @PreAuthorize("hasRole('USER')")
     @Override
     public ResponseEntity<DataResult<List<UserDto>>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
@@ -53,6 +77,7 @@ public class UserController implements IUserController {
     }
 
     @GetMapping("/getUserById{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @Override
     public ResponseEntity<DataResult<UserDto>> getUserById(@PathVariable String id) {
         return ResponseEntity.ok(userService.getUserById(id));

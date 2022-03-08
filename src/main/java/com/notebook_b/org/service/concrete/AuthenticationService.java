@@ -1,6 +1,5 @@
 package com.notebook_b.org.service.concrete;
 
-import com.notebook_b.org.core.constants.coreConstants.CoreExceptionErrorCodeConstants;
 import com.notebook_b.org.core.exceptions.abstracts.BaseExceptionModel;
 import com.notebook_b.org.core.exceptions.exceptionModel.AlReadyExistException;
 import com.notebook_b.org.core.exceptions.exceptionModel.NotFoundException;
@@ -12,14 +11,16 @@ import com.notebook_b.org.entity.security.RefreshToken;
 import com.notebook_b.org.product.dto.UserDto;
 import com.notebook_b.org.product.dto_convertor.principal_convertor.UserDtoConvertor;
 import com.notebook_b.org.product.request.authenticate.LoginRequest;
-import com.notebook_b.org.product.request.authenticate.LogoutRequest;
 import com.notebook_b.org.product.request.authenticate.RegistrationRequest;
 import com.notebook_b.org.product.request.authenticate.SignUpRequest;
 import com.notebook_b.org.product.request.createRequest.UserRequestCreate;
 import com.notebook_b.org.product.response.*;
+import com.notebook_b.org.product.security.jwt_security.JwtTokenManager;
 import com.notebook_b.org.service.abstracts.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 import static com.notebook_b.org.core.constants.coreConstants.CoreExceptionErrorCodeConstants.*;
 import static com.notebook_b.org.core.constants.coreEnums.CoreEnumExceptionMessages.*;
@@ -275,9 +276,21 @@ public class AuthenticationService implements IAuthenticationService {
             if (refreshTokenFound != null) {
                 try {
                     if (refreshTokenService.verifyRefreshToken(refreshTokenFound)) {
-                        throw new UnSuccessfulException(UN_SUCCESSFUL_REFRESH_TOKEN_RENEW, "refresh token is current still");
+                        userFound = refreshTokenFound.getUser();
+
+                        refreshTokenService.deleteRefreshToken(refreshTokenFound);
+
+                        String accessToken = accessTokenService.createAccessTokenWithUserName(userFound.getNickName()).getAccessToken();
+                        accessTokenService.verifyAccessToken(accessToken);
+
+                        return new RefreshTokenResponse(
+                                refreshTokenService.saveRefreshToken(refreshTokenService.createRefreshToken(userFound)).get().getRefreshToken(),
+                                accessToken,
+                                true,
+                                true
+                        );
                     } else {
-                        return null;
+                        throw new UnSuccessfulException(UN_SUCCESSFUL_REFRESH_TOKEN_RENEW, "refresh token is current still");
                     }
                 } catch (BaseExceptionModel exceptionModel) {
                     if (exceptionModel.getErrorCode().startsWith(NOT_VALID_EXCEPTION_ERROR_CODE)) {
@@ -319,32 +332,28 @@ public class AuthenticationService implements IAuthenticationService {
     public LogOutResponse logOut(String refreshToken) {
 
         RefreshToken refreshTokenFound = null;
-        User userFound;
 
         try {
 
-                refreshTokenFound = refreshTokenService.getRefreshTokenByToken(refreshToken).get();
+            refreshTokenFound = refreshTokenService.getRefreshTokenByToken(refreshToken).get();
 
-                refreshTokenService.deleteRefreshToken(refreshTokenFound);
+            refreshTokenService.deleteRefreshToken(refreshTokenFound);
 
-                userService.addLogOutLogToUser(null,refreshTokenFound.getUser());
+            userService.addLogOutLogToUser(null, refreshTokenFound.getUser());
 
-                return new LogOutResponse(true);
+            return new LogOutResponse(true, LocalDateTime.now(), refreshToken);
 
 
         } catch (BaseExceptionModel exceptionModel) {
 
-            if(exceptionModel.getErrorCode().startsWith(NOT_FOUND_EXCEPTION_ERROR_CODE))
-            {
+            if (exceptionModel.getErrorCode().startsWith(NOT_FOUND_EXCEPTION_ERROR_CODE)) {
 
-            }
-            else if(exceptionModel.getErrorCode().startsWith(ALREADY_EXIST_EXCEPTION_ERROR_CODE))
-            {
+            } else if (exceptionModel.getErrorCode().startsWith(ALREADY_EXIST_EXCEPTION_ERROR_CODE)) {
                 refreshTokenService.deleteRefreshToken(refreshTokenFound);
 
-                userService.addLogOutLogToUser(null,refreshTokenFound.getUser());
+                userService.addLogOutLogToUser(null, refreshTokenFound.getUser());
 
-                return new LogOutResponse(true);
+                return new LogOutResponse(true, LocalDateTime.now(), refreshToken);
             }
 
             log.error(logTitle + "user did not logout because : " + exceptionModel.getErrorDescription());

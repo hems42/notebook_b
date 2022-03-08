@@ -7,7 +7,7 @@ import javax.crypto.SecretKey;
 
 public class AppConstants {
 
-   public static final Integer ACCESS_TOKEN_EXPERIMENT_TIME = 3 * 60 * 1000;
+   public static final Integer ACCESS_TOKEN_EXPERIMENT_TIME = 30 * 60 * 1000;
 
    public static final String TOKEN_ISSUER = "notebook_b";
 

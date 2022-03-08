@@ -17,7 +17,6 @@ import javax.annotation.PostConstruct;
 public class JwtUserDetailsService implements UserDetailsService {
 
     private final IUserService userService;
-
     private final UserDtoConvertor userDtoConvertor;
 
     public JwtUserDetailsService(IUserService userService, UserDtoConvertor userDtoConvertor) {
@@ -25,13 +24,11 @@ public class JwtUserDetailsService implements UserDetailsService {
         this.userDtoConvertor = userDtoConvertor;
     }
 
-
     @PostConstruct
     public void init() {
 
 
     }
-
 
     @Override
     public UserDetails loadUserByUsername(String username) throws NotFoundException {
@@ -48,6 +45,5 @@ public class JwtUserDetailsService implements UserDetailsService {
 
         throw new NotFoundException(CoreEnumExceptionMessages.NOT_FOUND_USER,"not found user by token username");
     }
-
 
 }

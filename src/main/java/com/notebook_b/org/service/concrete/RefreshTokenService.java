@@ -122,10 +122,11 @@ public class RefreshTokenService implements IRefreshTokenService {
 
     @Override
     public Boolean deleteRefreshToken(RefreshToken refreshToken) {
-        if (util_isNotExistRefreshToken(refreshToken)) {
-            return refreshTokenRepository.deleteByRefreshToken(refreshToken) > 0;
+        if (refreshTokenRepository.deleteByRefreshToken(refreshToken) > 0) {
+            return true;
         } else {
-            throw new UnSuccessfulException(UN_SUCCESSFUL_REFRESH_TOKEN_DELETED, "not deleted refresh token with refresh token");
+            throw new UnSuccessfulException(UN_SUCCESSFUL_REFRESH_TOKEN_DELETED,
+                    "not deleted refresh token with refresh token");
         }
 
     }
