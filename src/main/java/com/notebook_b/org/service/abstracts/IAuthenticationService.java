@@ -13,7 +13,7 @@ public interface IAuthenticationService {
 
     LoginResponse logIn(LoginRequest loginRequest);
 
-    RefreshTokenResponse refreshToken(String refreshToken);
+    RefreshTokenResponse refreshToken(String refreshToken, String accessToken);
 
     LogOutResponse logOut(String refreshToken);
 

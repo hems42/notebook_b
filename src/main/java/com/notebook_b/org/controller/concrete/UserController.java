@@ -35,7 +35,7 @@ public class UserController implements IUserController {
     }
 
     @GetMapping("/dene_user")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public String deneUser() {
         return"user için geçerli";
     }
@@ -46,7 +46,7 @@ public class UserController implements IUserController {
     }
 
     @GetMapping("/dene_admin")
-    @PreAuthorize("hasRole('Admin')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public String deneAdmin() {
         return"admin için geçerli";
     }

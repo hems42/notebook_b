@@ -265,7 +265,7 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
     @Override
-    public RefreshTokenResponse refreshToken(String refreshToken) {
+    public RefreshTokenResponse refreshToken(String refreshToken, String accessToken) {
 
         RefreshToken refreshTokenFound;
         User userFound;
@@ -276,19 +276,25 @@ public class AuthenticationService implements IAuthenticationService {
             if (refreshTokenFound != null) {
                 try {
                     if (refreshTokenService.verifyRefreshToken(refreshTokenFound)) {
-                        userFound = refreshTokenFound.getUser();
 
-                        refreshTokenService.deleteRefreshToken(refreshTokenFound);
+                        if (!accessTokenService.verifyAccessToken(accessToken)) {
+                            userFound = refreshTokenFound.getUser();
 
-                        String accessToken = accessTokenService.createAccessTokenWithUserName(userFound.getNickName()).getAccessToken();
-                        accessTokenService.verifyAccessToken(accessToken);
+                            refreshTokenService.deleteRefreshToken(refreshTokenFound);
 
-                        return new RefreshTokenResponse(
-                                refreshTokenService.saveRefreshToken(refreshTokenService.createRefreshToken(userFound)).get().getRefreshToken(),
-                                accessToken,
-                                true,
-                                true
-                        );
+                            String accessTokenRenew = accessTokenService.createAccessTokenWithUserName(userFound.getNickName()).getAccessToken();
+                            accessTokenService.verifyAccessToken(accessTokenRenew);
+
+                            return new RefreshTokenResponse(
+                                    refreshTokenService.saveRefreshToken(refreshTokenService.createRefreshToken(userFound)).get().getRefreshToken(),
+                                    accessTokenRenew,
+                                    true,
+                                    true
+                            );
+                        } else {
+                            throw new UnAcceptableException(UN_ACCEPTABLE_ACCESS_TOKEN, "access tokens still valid");
+                        }
+
                     } else {
                         throw new UnSuccessfulException(UN_SUCCESSFUL_REFRESH_TOKEN_RENEW, "refresh token is current still");
                     }
@@ -299,7 +305,7 @@ public class AuthenticationService implements IAuthenticationService {
 
                         refreshTokenService.deleteRefreshToken(refreshTokenFound);
 
-                        String accessToken = accessTokenService.createAccessTokenWithUserName(userFound.getNickName()).getAccessToken();
+                        String accessTokenRenew_2 = accessTokenService.createAccessTokenWithUserName(userFound.getNickName()).getAccessToken();
                         accessTokenService.verifyAccessToken(accessToken);
 
                         return new RefreshTokenResponse(

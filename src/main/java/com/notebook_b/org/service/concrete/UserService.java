@@ -66,8 +66,7 @@ public class UserService implements IUserService {
     @Override
     public DataResult<UserDto> addUser(UserRequestCreate requestCreate) {
 
-       // Role userRole = roleService.getRoleByRoleName(AppEnumRoleTypes.USER).getData();
-        Role userRole = roleService.getRoleByRoleName(AppEnumRoleTypes.Admin).getData();
+        Role userRole = roleService.getRoleByRoleName(AppEnumRoleTypes.USER).getData();
 
         HashSet<Role> roles = new HashSet<>();
         roles.add(userRole);

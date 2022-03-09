@@ -41,14 +41,14 @@ public class AuthenticationController implements IAuthenticationController {
 
 
     @GetMapping("/refreshToken")
-    public ResponseEntity<?> refreshToken(@RequestParam String refreshToken) {
-        return ResponseEntity.ok(authenticationService.refreshToken(refreshToken));
+    public ResponseEntity<?> refreshToken(@RequestParam String refreshToken, @RequestParam String accessToken) {
+        return ResponseEntity.ok(authenticationService.refreshToken(refreshToken, accessToken));
     }
 
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestParam String refreshToken) {
-       return ResponseEntity.ok(authenticationService.logOut(refreshToken));
+        return ResponseEntity.ok(authenticationService.logOut(refreshToken));
     }
 
 
