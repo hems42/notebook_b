@@ -1,7 +1,5 @@
 package com.notebook_b.org.product.response;
 
-import javafx.application.Application;
-
 public class AccessTokenResponse {
 
     private String accessToken;
