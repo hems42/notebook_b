@@ -1,14 +1,14 @@
 package com.notebook_b.org.controller.concrete;
 
 import com.notebook_b.org.controller.abstracts.IAuthenticationController;
-import com.notebook_b.org.core.constants.coreEnums.CoreEnumExceptionMessages;
-import com.notebook_b.org.core.exceptions.exceptionModel.NotFoundException;
 import com.notebook_b.org.product.request.authenticate.LoginRequest;
 import com.notebook_b.org.product.request.authenticate.SignUpRequest;
+import com.notebook_b.org.product.request.createRequest.RoleRequestCreate;
 import com.notebook_b.org.product.response.LoginResponse;
 import com.notebook_b.org.product.response.RegistrationResponse;
 import com.notebook_b.org.product.response.SignUpResponse;
 import com.notebook_b.org.service.abstracts.IAuthenticationService;
+import com.notebook_b.org.service.abstracts.IRoleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,9 +17,12 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationController implements IAuthenticationController {
 
     private final IAuthenticationService authenticationService;
+    private final IRoleService roleService;
 
-    public AuthenticationController(IAuthenticationService authenticationService) {
+    public AuthenticationController(IAuthenticationService authenticationService,
+                                    IRoleService roleService) {
         this.authenticationService = authenticationService;
+        this.roleService = roleService;
     }
 
     @PostMapping("/signup")
@@ -49,6 +52,11 @@ public class AuthenticationController implements IAuthenticationController {
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestParam String refreshToken) {
         return ResponseEntity.ok(authenticationService.logOut(refreshToken));
+    }
+
+    @PostMapping("/addRole")
+    public ResponseEntity<?> addRole(@RequestBody RoleRequestCreate requestCreate) {
+        return ResponseEntity.ok(roleService.addRole(requestCreate));
     }
 
 

@@ -14,6 +14,8 @@ public interface IRoleService {
 
     DataResult<RoleDto> addRole(RoleRequestCreate requestCreate, User user);
 
+    DataResult<RoleDto> addRole(RoleRequestCreate requestCreate);
+
     DataResult<List<RoleDto>> getAllRole();
 
     DataResult<RoleDto> updateRole(RoleRequestUpdate requestUpdate);

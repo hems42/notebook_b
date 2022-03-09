@@ -68,6 +68,32 @@ public class RoleService implements IRoleService {
     }
 
     @Override
+    public DataResult<RoleDto> addRole(RoleRequestCreate requestCreate) {
+
+        if (util_isNotExistRole(requestCreate.getRoleName())) {
+            Role role = new Role(
+                    null,
+                    requestCreate.getRoleName(),
+                    requestCreate.getRoleDescription(),
+                    LocalDateTime.now(),
+                    null);
+
+            Role foundRole = roleDao.save(role);
+
+            logRoleService.addLogRole(new LogRoleRequestCreate(
+                    AppEnumOperationTypes.CREATED,
+                    foundRole
+            ), null);
+
+            return new SuccessDataResult(roleDtoConvertor.convert(foundRole),
+                    CoreEnumResponseMessages.ROLE_SUCCESSFULLY_ADDED.toString());
+        } else {
+            throw new UnSuccessfulException(UN_SUCCESSFUL_ROLE_CREATED, "cant created role");
+        }
+    }
+
+
+    @Override
     public DataResult<Role> getRoleByRoleName(AppEnumRoleTypes role) {
         return new SuccessDataResult<>(util_getRoleByRole(role.getRoleName()));
     }
