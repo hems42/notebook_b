@@ -369,4 +369,14 @@ public class AuthenticationService implements IAuthenticationService {
         }
 
     }
+
+    @Override
+    public void forgetPassword() {
+
+    }
+
+    @Override
+    public void reSendEmail() {
+
+    }
 }

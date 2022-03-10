@@ -17,6 +17,9 @@ public interface IAuthenticationService {
 
     LogOutResponse logOut(String refreshToken);
 
+    void forgetPassword();
+
+    void reSendEmail();
 
 
 }
