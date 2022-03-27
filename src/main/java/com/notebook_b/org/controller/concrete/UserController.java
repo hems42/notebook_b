@@ -11,7 +11,6 @@ import com.notebook_b.org.core.utilities.results.DataResult;
 import com.notebook_b.org.product.dto.UserDto;
 import com.notebook_b.org.product.request.createRequest.UserRequestCreate;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -30,12 +29,11 @@ public class UserController implements IUserController {
 
     @PostMapping("/addUser")
     @Override
-    public ResponseEntity<DataResult<UserDto>> addUser(@RequestBody UserRequestCreate requestCreate) {
+    public ResponseEntity<UserDto> addUser(@RequestBody UserRequestCreate requestCreate) {
         return ResponseEntity.ok(userService.addUser(requestCreate));
     }
 
     @GetMapping("/dene_user")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
     public String deneUser() {
         return"user için geçerli";
     }
@@ -46,40 +44,36 @@ public class UserController implements IUserController {
     }
 
     @GetMapping("/dene_admin")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public String deneAdmin() {
         return"admin için geçerli";
     }
 
     @GetMapping("/dene_user_admin")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public String deneAdminUser() {
         return"admin ve user için geçerli";
     }
 
     @GetMapping("/getAllUsers")
-    @PreAuthorize("hasRole('USER')")
     @Override
-    public ResponseEntity<DataResult<List<UserDto>>> getAllUsers() {
+    public ResponseEntity<List<UserDto>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @PutMapping("/updateUserById{id}")
     @Override
-    public ResponseEntity<DataResult<UserDto>> updateUserById(@PathVariable String id, @RequestBody UserRequestUpdate requestUpdate) {
+    public ResponseEntity<UserDto> updateUserById(@PathVariable String id, @RequestBody UserRequestUpdate requestUpdate) {
         return ResponseEntity.ok(userService.updateUserById(id,requestUpdate));
     }
 
     @PatchMapping("/deleteUserById{id}")
     @Override
-    public ResponseEntity<DataResult<Boolean>> deleteUserById(@PathVariable String id) {
+    public ResponseEntity<Boolean> deleteUserById(@PathVariable String id) {
         return ResponseEntity.ok(userService.deleteUserById(id));
     }
 
     @GetMapping("/getUserById{id}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
     @Override
-    public ResponseEntity<DataResult<UserDto>> getUserById(@PathVariable String id) {
+    public ResponseEntity<UserDto> getUserById(@PathVariable String id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 

@@ -15,19 +15,19 @@ import java.util.List;
 
 public interface IUserService {
 
-    DataResult<UserDto> addUser(UserRequestCreate requestCreate);
+    UserDto addUser(UserRequestCreate requestCreate);
 
-    DataResult<UserDto> getUserById(String id);
+    UserDto getUserById(String id);
 
-    DataResult<UserDto> getUserByEmail(String email);
+    UserDto getUserByEmail(String email);
 
-    DataResult<UserDto> getUserByNickName(String userNickName);
+    UserDto getUserByNickName(String userNickName);
 
-    DataResult<List<UserDto>> getAllUsers();
+    List<UserDto> getAllUsers();
 
-    DataResult<UserDto> updateUserById(String id, UserRequestUpdate requestUpdate);
+    UserDto updateUserById(String id, UserRequestUpdate requestUpdate);
 
-    DataResult<Boolean> deleteUserById(String id);
+    Boolean deleteUserById(String id);
 
     DataResult<NoteDto> addNoteToUser(NoteRequestCreate requestCreate);
 

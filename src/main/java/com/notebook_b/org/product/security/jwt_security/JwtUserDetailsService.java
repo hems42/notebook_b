@@ -33,9 +33,9 @@ public class JwtUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws NotFoundException {
 
-        DataResult result =userService.getUserByNickName(username);
+        UserDto userDtoFound =userService.getUserByNickName(username);
 
-        UserDto userDto=result !=null ? (UserDto) result.getData() :null ;
+        UserDto userDto= userDtoFound !=null ?  userDtoFound :null ;
 
         if (userDto!=null) {
 

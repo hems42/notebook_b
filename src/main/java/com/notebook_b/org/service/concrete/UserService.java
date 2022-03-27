@@ -64,7 +64,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public DataResult<UserDto> addUser(UserRequestCreate requestCreate) {
+    public UserDto addUser(UserRequestCreate requestCreate) {
 
         Role userRole = roleService.getRoleByRoleName(AppEnumRoleTypes.USER).getData();
 
@@ -93,7 +93,7 @@ public class UserService implements IUserService {
 
             log.info(logTitle + "user created successfully");
 
-            return new SuccessDataResult<>(userDto, "user created successfully");
+            return userDto;
         } else {
 
             log.error(logTitle + " user not created already created");
@@ -104,24 +104,23 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public DataResult<UserDto> getUserById(String id) {
+    public UserDto getUserById(String id) {
 
-        return new SuccessDataResult<UserDto>(userDtoConvertor.convert(util_getUserById(id)),
-                "user fetched by ıd");
+        return userDtoConvertor.convert(util_getUserById(id));
     }
 
     @Override
-    public DataResult<UserDto> getUserByNickName(String userNickName) {
+    public UserDto getUserByNickName(String userNickName) {
 
         User userFound = util_getUserByNickNameOrEmail(userNickName, null);
 
         UserDto userDto = userDtoConvertor.convert(userFound);
 
-        return new SuccessDataResult<>(userDto, "user fetched by user nick name");
+        return userDto;
     }
 
     @Override
-    public DataResult<UserDto> getUserByEmail(String email) {
+    public UserDto getUserByEmail(String email) {
 
         User userFound = util_getUserByNickNameOrEmail(null, email);
 
@@ -129,19 +128,19 @@ public class UserService implements IUserService {
 
             throw new NotFoundException(NOT_FOUND_USER, "cant fetched user by email");
         } else {
-            return new SuccessDataResult<>(userDtoConvertor.convert(userFound), "user fetched by email");
+            return userDtoConvertor.convert(userFound);
         }
     }
 
     @Override
-    public DataResult<List<UserDto>> getAllUsers() {
-        return new SuccessDataResult<List<UserDto>>(userDao.findAll()
+    public List<UserDto> getAllUsers() {
+        return  userDao.findAll()
                 .stream().map(user -> userDtoConvertor.convert(user))
-                .collect(Collectors.toList()), "all user fetched successfully");
+                .collect(Collectors.toList());
     }
 
     @Override
-    public DataResult<UserDto> updateUserById(String id, UserRequestUpdate requestUpdate) {
+    public UserDto updateUserById(String id, UserRequestUpdate requestUpdate) {
 
         User foundUser = userDao.findById(id).get();
         foundUser.setEmail(requestUpdate.getEmail());
@@ -149,16 +148,14 @@ public class UserService implements IUserService {
         foundUser.setNickName(requestUpdate.getNickName());
         foundUser.setUpdatedDate(LocalDateTime.now());
 
-        return new SuccessDataResult<UserDto>(userDtoConvertor.convert(userDao.save(foundUser)),
-                "user updated successfully");
+        return userDtoConvertor.convert(userDao.save(foundUser));
     }
 
     @Override
-    public DataResult<Boolean> deleteUserById(String id) {
+    public Boolean deleteUserById(String id) {
         User user = userDao.getById(id);
         userDao.delete(user);
-        return new SuccessDataResult<Boolean>(true,
-                "user deleted");
+        return true;
     }
 
 

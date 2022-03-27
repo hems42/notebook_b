@@ -63,7 +63,7 @@ public class AuthenticationService implements IAuthenticationService {
         try {
             userDtoCreated = userService.addUser(
                     new UserRequestCreate(signupRequest.getUserNickName(),
-                            signupRequest.geteMail(), signupRequest.getPassword())).getData();
+                            signupRequest.geteMail(), signupRequest.getPassword()));
             userCreated = userDtoConvertor.convert(userDtoCreated);
 
             AccessTokenResponse accessTokenResponse = accessTokenService.createAccessTokenWithUserName(
@@ -89,7 +89,12 @@ public class AuthenticationService implements IAuthenticationService {
             return new SignUpResponse(
                     accessTokenResponse.getAccessToken(),
                     refreshTokenCreated.getRefreshToken(),
-                    userDtoCreated);
+                    userDtoCreated.getId(),
+                    userDtoCreated.getNickName(),
+                    userDtoCreated.getEmail(),
+                    userDtoCreated.getPassword(),
+                    userDtoCreated.getActive(),
+                    userDtoCreated.getRegistered());
         } catch (BaseExceptionModel exceptionModel) {
             log.error(logTitle + "user not not created: " + exceptionModel.getErrorDescription());
 
@@ -181,16 +186,14 @@ public class AuthenticationService implements IAuthenticationService {
                 } else if (loginRequest.getUserNickname() != null && loginRequest.getEmail() == null) {
 
                     userDtoFound = userService
-                            .getUserByNickName(loginRequest.getUserNickname())
-                            .getData();
+                            .getUserByNickName(loginRequest.getUserNickname());
 
                     userFound = userDtoConvertor
                             .convert(userDtoFound);
 
                 } else if (loginRequest.getUserNickname() == null && loginRequest.getEmail() != null) {
                     userDtoFound = userService
-                            .getUserByEmail(loginRequest.getEmail())
-                            .getData();
+                            .getUserByEmail(loginRequest.getEmail());
 
                     userFound = userDtoConvertor
                             .convert(userDtoFound);

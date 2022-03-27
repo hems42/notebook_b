@@ -14,15 +14,15 @@ import java.util.List;
 
 public interface IUserController {
 
-    ResponseEntity<DataResult<UserDto>> addUser(UserRequestCreate requestCreate);
+    ResponseEntity<UserDto> addUser(UserRequestCreate requestCreate);
 
-    ResponseEntity<DataResult<List<UserDto>>> getAllUsers();
+    ResponseEntity<List<UserDto>> getAllUsers();
 
-    ResponseEntity<DataResult<UserDto>> updateUserById(String id, UserRequestUpdate requestUpdate);
+    ResponseEntity<UserDto> updateUserById(String id, UserRequestUpdate requestUpdate);
 
-    ResponseEntity<DataResult<Boolean>> deleteUserById(String id);
+    ResponseEntity<Boolean> deleteUserById(String id);
 
-    ResponseEntity<DataResult<UserDto>> getUserById(String id);
+    ResponseEntity<UserDto> getUserById(String id);
 
     ResponseEntity<DataResult<NoteDto>> addNoteToUser(NoteRequestCreate requestCreate);
 
