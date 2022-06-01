@@ -1,8 +1,8 @@
 package com.notebook_b.org.product.request.authenticate;
 
-public class SignUpRequest {
+    public class SignUpRequest {
 
-    private String userNickName;
+        private String userNickName;
 
     private String eMail;
 

@@ -8,7 +8,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-
 @Service
 public class AccessTokenService implements IAccessTokenService {
 
@@ -38,6 +37,12 @@ public class AccessTokenService implements IAccessTokenService {
 
     @Override
     public String getUserNameFromAccessToken(String accessToken){return tokenManager.getUserNameFromToken(accessToken);}
+
+    @Override
+    public String getAccessTokenFromUserName(String userName) {
+        return null;
+    }
+
 
     @Override
     public Boolean isNotExpired(String accessToken) {

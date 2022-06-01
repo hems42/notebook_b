@@ -13,6 +13,8 @@ public interface IAccessTokenService {
 
     String getUserNameFromAccessToken(String accessToken);
 
+    String getAccessTokenFromUserName(String userName);
+
     Boolean isNotExpired(String accessToken);
 
 }

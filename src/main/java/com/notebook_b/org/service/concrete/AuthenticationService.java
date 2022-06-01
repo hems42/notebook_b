@@ -15,12 +15,12 @@ import com.notebook_b.org.product.request.authenticate.RegistrationRequest;
 import com.notebook_b.org.product.request.authenticate.SignUpRequest;
 import com.notebook_b.org.product.request.createRequest.UserRequestCreate;
 import com.notebook_b.org.product.response.*;
-import com.notebook_b.org.product.security.jwt_security.JwtTokenManager;
 import com.notebook_b.org.service.abstracts.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static com.notebook_b.org.core.constants.coreConstants.CoreExceptionErrorCodeConstants.*;
 import static com.notebook_b.org.core.constants.coreEnums.CoreEnumExceptionMessages.*;
@@ -92,7 +92,6 @@ public class AuthenticationService implements IAuthenticationService {
                     userDtoCreated.getId(),
                     userDtoCreated.getNickName(),
                     userDtoCreated.getEmail(),
-                    userDtoCreated.getPassword(),
                     userDtoCreated.getActive(),
                     userDtoCreated.getRegistered());
         } catch (BaseExceptionModel exceptionModel) {
@@ -103,6 +102,7 @@ public class AuthenticationService implements IAuthenticationService {
         }
 
     }
+
 
     @Override
     public RegistrationResponse register(String confirmationToken) {
@@ -167,6 +167,7 @@ public class AuthenticationService implements IAuthenticationService {
         }
     }
 
+
     @Override
     public LoginResponse logIn(LoginRequest loginRequest) {
 
@@ -213,7 +214,7 @@ public class AuthenticationService implements IAuthenticationService {
             if (userDtoFound != null) {
 
                 if (userService.verifyUserPassword(userFound, loginRequest.getPassword())) {
-                    if (refreshTokenService.getRefreshTokenByUser(userFound) == null) {
+                    if (!refreshTokenService.getRefreshTokenByUser(userFound).isPresent()) {
 
                         _accessToken = accessTokenService
                                 .createAccessTokenWithUserName(userDtoFound.getNickName())
@@ -240,7 +241,8 @@ public class AuthenticationService implements IAuthenticationService {
                                 userDtoFound.getRoles(),
                                 userDtoFound.getCreatedDate(),
                                 userDtoFound.getUpdatedDate(),
-                                _accessToken, _refreshToken);
+                                _accessToken,
+                                _refreshToken);
 
                     } else {
                         log.error(logTitle + "user already login");
@@ -263,77 +265,38 @@ public class AuthenticationService implements IAuthenticationService {
             throw new UnSuccessfulException(UN_SUCCESSFUL_LOGIN,
                     exceptionModel.getErrorCode() + " : " + exceptionModel.getErrorDescription());
         }
-
-
     }
 
     @Override
-    public RefreshTokenResponse refreshToken(String refreshToken, String accessToken) {
+    public RefreshTokenResponse refreshToken(String refreshToken) {
 
         RefreshToken refreshTokenFound;
         User userFound;
+        Optional optionalRefreshToken = refreshTokenService.getRefreshTokenByToken(refreshToken);
 
-        try {
-            refreshTokenFound = refreshTokenService.getRefreshTokenByToken(refreshToken).get();
+        if (optionalRefreshToken.isPresent()) {
+            refreshTokenFound = (RefreshToken) optionalRefreshToken.get();
+            userFound = refreshTokenFound.getUser();
+            if (refreshTokenService.verifyRefreshToken(refreshTokenFound)) {
 
-            if (refreshTokenFound != null) {
-                try {
-                    if (refreshTokenService.verifyRefreshToken(refreshTokenFound)) {
+                String accessTokenRenew = accessTokenService
+                        .createAccessTokenWithUserName(userFound.getNickName())
+                        .getAccessToken();
+                accessTokenService.verifyAccessToken(accessTokenRenew);
 
-                        if (!accessTokenService.verifyAccessToken(accessToken)) {
-                            userFound = refreshTokenFound.getUser();
-
-                            refreshTokenService.deleteRefreshToken(refreshTokenFound);
-
-                            String accessTokenRenew = accessTokenService.createAccessTokenWithUserName(userFound.getNickName()).getAccessToken();
-                            accessTokenService.verifyAccessToken(accessTokenRenew);
-
-                            return new RefreshTokenResponse(
-                                    refreshTokenService.saveRefreshToken(refreshTokenService.createRefreshToken(userFound)).get().getRefreshToken(),
-                                    accessTokenRenew,
-                                    true,
-                                    true
-                            );
-                        } else {
-                            throw new UnAcceptableException(UN_ACCEPTABLE_ACCESS_TOKEN, "access tokens still valid");
-                        }
-
-                    } else {
-                        throw new UnSuccessfulException(UN_SUCCESSFUL_REFRESH_TOKEN_RENEW, "refresh token is current still");
-                    }
-                } catch (BaseExceptionModel exceptionModel) {
-                    if (exceptionModel.getErrorCode().startsWith(NOT_VALID_EXCEPTION_ERROR_CODE)) {
-
-                        userFound = refreshTokenFound.getUser();
-
-                        refreshTokenService.deleteRefreshToken(refreshTokenFound);
-
-                        String accessTokenRenew_2 = accessTokenService.createAccessTokenWithUserName(userFound.getNickName()).getAccessToken();
-                        accessTokenService.verifyAccessToken(accessToken);
-
-                        return new RefreshTokenResponse(
-                                refreshTokenService.saveRefreshToken(refreshTokenService.createRefreshToken(userFound)).get().getRefreshToken(),
-                                accessToken,
-                                true,
-                                true
-                        );
-
-                    } else {
-                        throw new UnSuccessfulException(UN_SUCCESSFUL_REFRESH_TOKEN_RENEW, "refresh token is current still");
-
-                    }
-                }
+                return new RefreshTokenResponse(
+                        refreshTokenFound.getRefreshToken(),
+                        accessTokenRenew,
+                        true,
+                        true);
             } else {
 
-                throw new NotFoundException(NOT_FOUND_USER, "user not found by refresh token");
+                refreshTokenService.deleteRefreshToken(refreshTokenFound);
+                throw new UnSuccessfulException(UN_SUCCESSFUL_REFRESH_TOKEN_RENEW, "refresh token is not valid");
+
             }
-
-        } catch (BaseExceptionModel exceptionModel) {
-
-            log.error(logTitle + "refresh token not did not renew because : " + exceptionModel.getErrorDescription());
-
-            throw new UnSuccessfulException(UN_SUCCESSFUL_REFRESH_TOKEN_RENEW,
-                    exceptionModel.getErrorCode() + " : " + exceptionModel.getErrorDescription());
+        } else {
+            throw new UnSuccessfulException(UN_SUCCESSFUL_REFRESH_TOKEN_RENEW, "refresh token not found");
         }
     }
 
@@ -378,8 +341,18 @@ public class AuthenticationService implements IAuthenticationService {
 
     }
 
-    @Override
     public void reSendEmail() {
+    }
 
+    @Override
+    public String deneme(String deneme) {
+
+        if (deneme.isEmpty()) {
+            throw new UnAcceptableException(UN_ACCEPTABLE_ACCESS_TOKEN, "denem hata 1");
+        } else if (deneme.startsWith("A")) {
+            throw new NotFoundException(NOT_FOUND_ACCESS_TOKEN, "deneme hata 2");
+        } else {
+            return "deneme ile sonuç gönderildi...";
+        }
     }
 }

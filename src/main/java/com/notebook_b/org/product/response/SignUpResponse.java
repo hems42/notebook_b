@@ -12,8 +12,6 @@ public class SignUpResponse {
 
     private String email;
 
-    private String password;
-
     private Boolean isActive;
 
     private Boolean isRegistered;
@@ -26,7 +24,6 @@ public class SignUpResponse {
                           String userId,
                           String nickName,
                           String email,
-                          String password,
                           Boolean isActive,
                           Boolean isRegistered) {
         this.accessToken = accessToken;
@@ -34,7 +31,6 @@ public class SignUpResponse {
         this.userId = userId;
         this.nickName = nickName;
         this.email = email;
-        this.password = password;
         this.isActive = isActive;
         this.isRegistered = isRegistered;
     }
@@ -77,14 +73,6 @@ public class SignUpResponse {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public Boolean getActive() {

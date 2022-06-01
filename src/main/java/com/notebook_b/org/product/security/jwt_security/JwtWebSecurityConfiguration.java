@@ -1,6 +1,5 @@
 package com.notebook_b.org.product.security.jwt_security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,7 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(jsr250Enabled = true)
 public class JwtWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
@@ -26,19 +25,24 @@ public class JwtWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
+    private final JwtAccessDeniedFilter  jwtAccessDeniedFilter;
+
     public JwtWebSecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter,
                                        UserDetailsService userDetailsService,
-                                       JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+                                       JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
+                                       JwtAccessDeniedFilter jwtAccessDeniedFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.userDetailsService = userDetailsService;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+        this.jwtAccessDeniedFilter = jwtAccessDeniedFilter;
+        jwtAuthenticationFilter.setJwtUserDetailsService(userDetailsService);
     }
 
-    @Autowired
-    public void configurePasswordEncoder(AuthenticationManagerBuilder builder) throws Exception {
-
-        builder.userDetailsService(userDetailsService).passwordEncoder(getBCryptPasswordEncoder());
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(getBCryptPasswordEncoder());
     }
+
 
     @Bean
     public BCryptPasswordEncoder getBCryptPasswordEncoder() {
@@ -57,13 +61,20 @@ public class JwtWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .and()
                 .csrf().disable()
                 .authorizeRequests().antMatchers("/api/authentication/**").permitAll()
-                        .anyRequest().permitAll()
+                      //  .and().authorizeRequests().antMatchers("/api/users/dene_user")
+                       // .hasRole("USER")
+                        //.and().authorizeRequests().antMatchers("/api/users/dene_admin")
+                       // .hasRole("ADMIN")
+
             .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
             .and()
+                        .exceptionHandling().accessDeniedHandler(jwtAccessDeniedFilter)
+                        .and()
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
 
 
     }

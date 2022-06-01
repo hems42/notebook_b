@@ -79,7 +79,7 @@ public class JwtTokenManager {
         if (claims != null) {
             if (claims.getExpiration().after(new Date(System.currentTimeMillis()))) {
 
-                log.info(logTitle + "access token is is expire");
+                log.info(logTitle + "access token is not expired");
 
                 return true;
 

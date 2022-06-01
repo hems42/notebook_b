@@ -13,7 +13,7 @@ public interface IAuthenticationService {
 
     LoginResponse logIn(LoginRequest loginRequest);
 
-    RefreshTokenResponse refreshToken(String refreshToken, String accessToken);
+    RefreshTokenResponse refreshToken(String refreshToken);
 
     LogOutResponse logOut(String refreshToken);
 
@@ -21,5 +21,5 @@ public interface IAuthenticationService {
 
     void reSendEmail();
 
-
+    String deneme(String deneme);
 }

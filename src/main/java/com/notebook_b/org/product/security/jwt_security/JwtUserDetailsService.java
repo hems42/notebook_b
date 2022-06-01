@@ -2,7 +2,6 @@ package com.notebook_b.org.product.security.jwt_security;
 
 import com.notebook_b.org.core.constants.coreEnums.CoreEnumExceptionMessages;
 import com.notebook_b.org.core.exceptions.exceptionModel.NotFoundException;
-import com.notebook_b.org.core.utilities.results.DataResult;
 import com.notebook_b.org.product.dto_convertor.principal_convertor.UserDtoConvertor;
 import com.notebook_b.org.product.dto.UserDto;
 import com.notebook_b.org.entity.leadRole.User;
@@ -24,11 +23,7 @@ public class JwtUserDetailsService implements UserDetailsService {
         this.userDtoConvertor = userDtoConvertor;
     }
 
-    @PostConstruct
-    public void init() {
 
-
-    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws NotFoundException {

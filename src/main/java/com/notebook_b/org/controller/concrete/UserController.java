@@ -18,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+@CrossOrigin
 public class UserController implements IUserController {
 
     private final UserService userService;
@@ -34,8 +35,8 @@ public class UserController implements IUserController {
     }
 
     @GetMapping("/dene_user")
-    public String deneUser() {
-        return"user için geçerli";
+    public Home deneUser() {
+        return new Home("müstakil",4);
     }
 
     @GetMapping("/dene")
@@ -87,3 +88,12 @@ public class UserController implements IUserController {
         return null;
     }
 }
+ class  Home {
+    public String name;
+    public int roomNumber;
+
+     public Home(String name, int roomNumber) {
+         this.name = name;
+         this.roomNumber = roomNumber;
+     }
+ }

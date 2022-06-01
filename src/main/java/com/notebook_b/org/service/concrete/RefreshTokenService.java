@@ -34,73 +34,43 @@ public class RefreshTokenService implements IRefreshTokenService {
     @Override
     public RefreshToken createRefreshToken(User user) {
 
-        try {
-            if (util_isNotExistRefreshToken(user)) {
-                return new RefreshToken(
-                        null,
-                        user,
-                        UUID.randomUUID().toString(),
-                        Instant.now().plusMillis(AppConstants.REFRESH_TOKEN_EXPERIMENT_TIME),
-                        LocalDateTime.now()
-                );
-            } else {
-
-                log.error("refresh token not created");
-
-                  throw new UnSuccessfulException(UN_SUCCESSFUL_REFRESH_TOKEN_CREATED, "not created refresh token");
-            }
-        } catch (BaseExceptionModel model) {
-
-            if (model.getErrorCode().matches(ALREADY_EXIST_EXCEPTION_ERROR_CODE)) {
-
-                log.error("refresh token already exist!!  ::" + model.getErrorMessage());
-
-            } else {
-
-                log.error("not defined error!!");
-
-            }
-
-        }
-
-        return null;
+        return new RefreshToken(
+                null,
+                user,
+                UUID.randomUUID().toString(),
+                Instant.now().plusMillis(AppConstants.REFRESH_TOKEN_EXPERIMENT_TIME),
+                LocalDateTime.now()
+        );
     }
 
     @Override
     public Optional<RefreshToken> saveRefreshToken(RefreshToken refreshToken) {
-
-        if (util_isNotExistRefreshToken(refreshToken.getRefreshToken())) {
             return Optional.of(refreshTokenRepository.save(refreshToken));
-        } else {
-            throw new UnSuccessfulException(UN_SUCCESSFUL_REFRESH_TOKEN_SAVED, "not added refresh token");
-        }
     }
 
     @Override
     public Optional<RefreshToken> getRefreshTokenByToken(String refreshToken) {
-        return Optional.of(util_getRefreshToken(refreshToken));
+        RefreshToken refreshTokenFound = refreshTokenRepository.getByRefreshToken(refreshToken);
+
+        if (refreshTokenFound != null) {
+            return Optional.of(refreshTokenFound);
+        } else {
+
+            log.error("not found refresh token by refresh token");
+            return Optional.empty();
+        }
+
     }
 
     @Override
     public Optional<RefreshToken> getRefreshTokenByUser(User user) {
 
-        try {
-            RefreshToken refreshToken = util_getRefreshToken(user);
-
-            if (refreshToken != null) {
-                return Optional.of(refreshToken);
-            } else {
-                return null;
-            }
-        }
-        catch (BaseExceptionModel exceptionModel)
+        if(refreshTokenRepository.getRefreshTokenByUser(user)!=null)
         {
-            if(exceptionModel.getErrorCode().matches("44005344"))
-            {
-                return null;
-            }
+            return Optional.of(refreshTokenRepository.getRefreshTokenByUser(user));
+        } else {
+          return  Optional.empty();
         }
-    return null;
     }
 
     @Override
@@ -111,7 +81,18 @@ public class RefreshTokenService implements IRefreshTokenService {
 
     @Override
     public Boolean verifyRefreshToken(RefreshToken refreshToken) {
-        return util_verifyRefreshToken(refreshToken);
+
+        if (refreshToken.getExpiryDate().compareTo(Instant.now()) < 0) {
+
+            refreshTokenRepository.delete(refreshToken);
+
+            log.warn("refresh token expired and deleted");
+
+           return false;
+
+        } else {
+            return true;
+        }
     }
 
     @Override
@@ -122,22 +103,12 @@ public class RefreshTokenService implements IRefreshTokenService {
 
     @Override
     public Boolean deleteRefreshToken(RefreshToken refreshToken) {
-        if (refreshTokenRepository.deleteByRefreshToken(refreshToken) > 0) {
-            return true;
-        } else {
-            throw new UnSuccessfulException(UN_SUCCESSFUL_REFRESH_TOKEN_DELETED,
-                    "not deleted refresh token with refresh token");
-        }
-
+            return refreshTokenRepository.deleteByRefreshToken(refreshToken) > 0;
     }
 
     @Override
     public Boolean deleteRefreshToken(User user) {
-        if (util_isNotExistRefreshToken(user)) {
             return refreshTokenRepository.deleteByUser(user) > 0;
-        } else {
-            throw new UnSuccessfulException(UN_SUCCESSFUL_REFRESH_TOKEN_DELETED, "not deleted refresh token with user");
-        }
     }
 
 
